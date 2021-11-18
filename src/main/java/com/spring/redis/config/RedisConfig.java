@@ -18,6 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.spring.redis.service.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.session.data.redis.config.ConfigureRedisAction;
 
 @RequiredArgsConstructor
 @Configuration
@@ -31,7 +32,12 @@ public class RedisConfig {
 	
 	@Value("${spring.redis.channel}")
 	private String redisChannel;
-	
+
+	@Bean
+	public ConfigureRedisAction configureRedisAction() {
+		return ConfigureRedisAction.NO_OP;
+	}
+
 	@Bean
 	public RedisConnectionFactory connectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();

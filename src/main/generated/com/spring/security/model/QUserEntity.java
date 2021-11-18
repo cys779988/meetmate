@@ -39,8 +39,6 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
-    public final StringPath user_id = createString("user_id");
-
     public QUserEntity(String variable) {
         super(UserEntity.class, forVariable(variable));
     }
