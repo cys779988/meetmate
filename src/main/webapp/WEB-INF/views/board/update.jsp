@@ -14,7 +14,7 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-				    <form action="/api/board/${boardDto.id}">
+				    <form action="<c:url value='/api/board/${boardDto.id}'/>">
 				        <input type="hidden" name="_method" value="put"/>
 				        <input type="hidden" name="id" value="${boardDto.id}"/>
 				

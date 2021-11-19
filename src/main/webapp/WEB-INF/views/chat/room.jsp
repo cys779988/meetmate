@@ -52,7 +52,7 @@
         }
 
         $.ajax({
-			url : '/chat/rooms',
+			url : "<c:url value='/chat/rooms'/>",
 			method : 'GET',
 			success : function(result){
 				console.log(result);
@@ -80,7 +80,7 @@
 		} else {
 			var params = new URLSearchParams();
             params.append("name", inputData);
-            axios.post('/chat/room', params)
+            axios.post("<c:url value='/chat/room'/>", params)
             .then( response => {
                     alert(response.data.name+"방 개설에 성공하였습니다.")
                     inputData = '';
@@ -95,7 +95,7 @@
 	function enterRoom(roomId) {
 	    localStorage.setItem('wschat.sender', '${sessionScope.user.name}');
 	    localStorage.setItem('wschat.roomId', roomId);
-		location.href="/chat/room/enter/" + roomId;
+		location.href="<c:url value='/chat/room/enter/'/>" + roomId;
 	}
 </script>
 </body>

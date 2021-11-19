@@ -9,7 +9,7 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>Charts - SB Admin</title>
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="<c:url value='css/styles.css'/>" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
@@ -170,10 +170,10 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="assets/demo/chart-pie-demo.js"></script>
+        <script src="<c:url value='/js/scripts.js'/>"></script>
+        <script src="<c:url value='assets/demo/chart-area-demo.js'/>"></script>
+        <script src="<c:url value='assets/demo/chart-bar-demo.js'/>"></script>
+        <script src="<c:url value='assets/demo/chart-pie-demo.js'/>"></script>
     </body>
 </html>

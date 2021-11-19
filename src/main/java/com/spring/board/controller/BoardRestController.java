@@ -83,7 +83,7 @@ public class BoardRestController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
 		boardService.add(param);
-		return ResponseEntity.ok("/board/");
+		return ResponseEntity.ok(null);
 	}
 	
 	@PutMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -97,6 +97,6 @@ public class BoardRestController {
 	@DeleteMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity delete(@PathVariable("no") Long no) {
 		boardService.delete(no);
-		return ResponseEntity.ok("/board/");
+		return ResponseEntity.ok(null);
 	}
 }

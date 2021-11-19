@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 		<div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
@@ -12,7 +12,7 @@
 	                                Dashboard
 	                            </a>
                             </sec:authorize>
-                            <a class="nav-link" href="/user/signup">
+                            <a class="nav-link" href="<c:url value='/user/signup'/>">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
                                 SignUp
                             </a>
@@ -24,8 +24,8 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="layout-static.html">Static Navigation</a>
-                                    <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
+                                    <a class="nav-link" href="#">Static Navigation</a>
+                                    <a class="nav-link" href="#">Light Sidenav</a>
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
@@ -52,9 +52,7 @@
                                     </a>
                                     <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="401.html">401 Page</a>
-                                            <a class="nav-link" href="404.html">404 Page</a>
-                                            <a class="nav-link" href="500.html">500 Page</a>
+                                            <a class="nav-link" href="#">Page</a>
                                         </nav>
                                     </div>
                                 </nav>
@@ -64,15 +62,15 @@
 		                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
 		                            Chart
 	                            </a>
-	                            <a class="nav-link" href="/board/">
+	                            <a class="nav-link" href="<c:url value='/board/'/>">
 		                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 		                            Board
 	                            </a>
-	                            <a class="nav-link" href="/board/courseList">
+	                            <a class="nav-link" href="<c:url value='/board/courseList'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 	                            	Course
 	                            </a>
-	                            <a class="nav-link" href="/chat/room">
+	                            <a class="nav-link" href="<c:url value='/chat/room'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
 	                            	Chat
 	                            </a>

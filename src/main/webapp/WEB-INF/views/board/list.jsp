@@ -52,11 +52,11 @@
 		<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script src="/js/grid/tui-code-snippet.js"></script>
-<script src="/js/grid/tui-pagination.js"></script>
-<script src="/js/grid/tui-grid.js"></script>
-<script src="/js/grid/grid.js"></script>
-<script src="/js/common.js"></script>
+<script src="<c:url value='/js/grid/tui-code-snippet.js'/>"></script>
+<script src="<c:url value='/js/grid/tui-pagination.js'/>"></script>
+<script src="<c:url value='/js/grid/tui-grid.js'/>"></script>
+<script src="<c:url value='/js/grid/grid.js'/>"></script>
+<script src="<c:url value='/js/common.js'/>"></script>
 <script>
 	document.getElementById("search-btn").addEventListener("click", (e) => {
 		getBoard(1);
@@ -64,7 +64,7 @@
 	
 	document.getElementById("add-btn").addEventListener("click", (e) => {
 		e.preventDefault();
-		location.href = "/board/add";
+		location.href = "<c:url value='/board/add'/>";
 	})
 	
 	
@@ -111,7 +111,7 @@
 	 
 	const dataSource = {
 		api: {
-			readData: { url: '/api/board/get', method: 'GET', initParams: {keyword: $("input[name = keyword]").val()}}
+			readData: { url: "<c:url value='/api/board/get'/>", method: 'GET', initParams: {keyword: $("input[name = keyword]").val()}}
 		},
 		contentType: 'application/json'
 	};

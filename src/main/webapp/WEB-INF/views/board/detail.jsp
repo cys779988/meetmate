@@ -34,28 +34,28 @@
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script type="text/javascript" src="/js/common.js" ></script> 
+<script src="<c:url value='/js/common.js'/>" ></script> 
 <script>
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "/board/";
+		location.href = "<c:url value='/board/'/>";
 	})
 
 	document.getElementById('modify-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "edit/${boardDto.id}";
+		location.href = "<c:url value='edit/${boardDto.id}'/>";
 	})
 	
 	document.getElementById('delete-btn').addEventListener('click',(e) => {
 		e.preventDefault();
 		
 		$.ajax({
-			url : "/api/board/${boardDto.id}",
+			url : "<c:url value='/api/board/${boardDto.id}'/>",
 			type : "delete",
 			contentType : "application/json",
 			dataType : "text",
 			success : function(result){
-				location.href = result;
+				location.href = "<c:url value='/board/'/>";
 			}
 		});
 	})

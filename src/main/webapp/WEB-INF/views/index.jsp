@@ -11,7 +11,7 @@
         <meta name="author" content="" />
         <title>Dashboard - SB Admin</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="<c:url value='css/styles.css'/>" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
 	<body class="sb-nav-fixed">
@@ -96,9 +96,9 @@
                 <c:import url="common/footer.jsp"></c:import>
             </div>
         </div>
-        <script src="/js/scripts.js"></script>
+        <script src="<c:url value='/js/scripts.js'/>"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="/js/chart/chart-area.js"></script>
-        <script src="/js/chart/chart-bar.js"></script>
+        <script src="<c:url value='/js/chart/chart-area.js'/>"></script>
+        <script src="<c:url value='/js/chart/chart-bar.js'/>"></script>
     </body>
 </html>

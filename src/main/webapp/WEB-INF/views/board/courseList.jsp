@@ -43,11 +43,11 @@
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script src="/js/grid/tui-code-snippet.js"></script>
-<script src="/js/grid/tui-pagination.js"></script>
-<script src="/js/grid/tui-grid.js"></script>
-<script src="/js/grid/grid.js"></script>
-<script src="/js/common.js"></script>
+<script src="<c:url value='/js/grid/tui-code-snippet.js'/>"></script>
+<script src="<c:url value='/js/grid/tui-pagination.js'/>"></script>
+<script src="<c:url value='/js/grid/tui-grid.js'/>"></script>
+<script src="<c:url value='/js/grid/grid.js'/>"></script>
+<script src="<c:url value='/js/common.js'/>"></script>
 <script>
 
 	class TextEditor{
@@ -253,10 +253,10 @@
 	 
 	const dataSource = {
 		api: {
-			readData: { url: '/api/course/get', method: 'GET' },
-			createData: { url: '/api/course/post', method: 'POST' },
-			modifyData: { url: '/api/course/put', method: 'PUT' },
-			deleteData: { url: '/api/course/delete', method: 'POST' }
+			readData: { url: "<c:url value='/api/course/get'/>", method: 'GET' },
+			createData: { url: "<c:url value='/api/course/post'/>", method: 'POST' },
+			modifyData: { url: "<c:url value='/api/course/put'/>", method: 'PUT' },
+			deleteData: { url: "<c:url value='/api/course/delete'/>", method: 'POST' }
 		},
 		contentType: 'application/json'
 	};

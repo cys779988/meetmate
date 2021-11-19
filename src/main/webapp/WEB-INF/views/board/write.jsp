@@ -44,11 +44,11 @@
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script type="text/javascript" src="/js/common.js" ></script> 
+<script src="<c:url value='/js/common.js'/>" ></script> 
 <script>
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "/board/";
+		location.href = "<c:url value='/board/'/>";
 	})
 
 	document.getElementById('add-btn').addEventListener("click", (e)=> {
@@ -56,13 +56,13 @@
 		const data = $("#form").serializeObject();
 		
 		$.ajax({
-			url : "/api/board/add",
+			url : "<c:url value='/api/board/add'/>",
 			method : "post",
 			data : JSON.stringify(data),
 			contentType : "application/json",
-			dataType : "application/json",
 			success : function(result) {
-				location.href = result;
+				console.log(result);
+				location.href = "<c:url value='/board/'/>";
 			},
 			error : function(result){
 				$('p').empty();

@@ -77,10 +77,10 @@
 	
 	function created(){
 		var _this = this;
-		axios.get('/chat/user').then(response => {
+		axios.get("<c:url value='/chat/user'/>").then(response => {
 			_this.token = response.data.token;
 			ws.connect({"token" : _this.token}, function(frame){
-				ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message){
+				ws.subscribe("<c:url value='/sub/chat/room/'/>"+ _this.roomId, function(message){
 					var recv = JSON.parse(message.body);
 					_this.recvMessage(recv);
 				});
@@ -94,7 +94,7 @@
 	
 	function sendMessage(type) {
 		var message = document.getElementsByName('message')[0].value;
-		ws.send("/pub/chat/message"
+		ws.send("<c:url value='/pub/chat/message'/>"
 				, {"token" : token}
 				, JSON.stringify({
 					type : type
