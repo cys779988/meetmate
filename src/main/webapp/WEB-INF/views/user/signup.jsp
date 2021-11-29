@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Register - SB Admin</title>
+        <title>Register</title>
         <link href="<c:url value='/css/styles.css'/>" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
@@ -21,48 +21,45 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-7">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">회원가입</h3></div>
                                     <div class="card-body">
-                                        <form>
+                                        <form name="registForm" method="post" action="<c:url value='/user/signup'/>">
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" />
-                                                        <label for="inputFirstName">First name</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-floating">
-                                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" />
-                                                        <label for="inputLastName">Last name</label>
+                                                        <input class="form-control" id="name" type="text" name="name" value="${userDto.name}" />
+                                                        <label for="name">이름</label>
+                                                        <p>${valid_name}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputEmail" type="email" placeholder="name@example.com" />
-                                                <label for="inputEmail">Email address</label>
+                                                <input class="form-control" id="email" type="text" name="email" value="${userDto.email}" />
+                                                <label for="email">ID</label>
+                                                <p>${valid_email}</p>
                                             </div>
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPassword" type="password" placeholder="Create a password" />
-                                                        <label for="inputPassword">Password</label>
+                                                        <input class="form-control" id="password" name="password" type="password" />
+                                                        <label for="password">비밀번호</label>
+                                                        <p>${valid_password}</p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm password" />
-                                                        <label for="inputPasswordConfirm">Confirm Password</label>
+                                                        <input class="form-control" id="passwordConfirm" type="password" />
+                                                        <label for="passwordConfirm">비밀번호 확인</label>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="mt-4 mb-0">
-                                                <div class="d-grid"><a class="btn btn-primary btn-block" href="login.html">Create Account</a></div>
+                                            	<div class="d-grid"><button class="btn btn-primary btn-block" id="regist-btn">등록</button></div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="card-footer text-center py-3">
-                                        <div class="small"><a href="<c:url value='/user/login'/>">Have an account? Go to login</a></div>
+                                        <div class="small"><a href="<c:url value='/user/login'/>">로그인</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -74,7 +71,20 @@
                 <c:import url="../common/footer.jsp"></c:import>
             </div>
         </div>
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="<c:url value='/js/scripts.js'/>"></script>
+	<script>
+		document.getElementById('regist-btn').addEventListener('click', e => {
+			e.preventDefault();
+			if($("#password").value !== $('#passwordConfirm').value) {
+				alert('비밀번호를 확인해주세요.');
+				return false;
+			} else {
+				document.registForm.submit();
+			}
+			
+		})
+	</script>
     </body>
 </html>

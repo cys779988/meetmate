@@ -1,11 +1,8 @@
 package com.spring.common.controller;
 
-import javax.persistence.criteria.CriteriaBuilder.Case;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -44,7 +41,6 @@ public class ExceptionHandlerController implements ErrorController{
 	
 	@Override
 	public String getErrorPath() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

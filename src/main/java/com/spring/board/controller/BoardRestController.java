@@ -1,6 +1,5 @@
 package com.spring.board.controller;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.board.model.BoardDto;
+import com.spring.board.model.ReplyDto;
 import com.spring.board.service.BoardService;
-import com.spring.common.util.AppUtil;
+import com.spring.common.util.GridUtil;
+import com.spring.common.util.PageVO;
 
 import lombok.AllArgsConstructor;
 
@@ -34,69 +35,96 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/board/*")
 @SuppressWarnings("rawtypes")
 public class BoardRestController {
-	
+
 	BoardService boardService;
-	
-	@GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity getBoards(@RequestParam(value="page", required = false) Integer page, 
-			@RequestParam(value="keyword", required = false) String keyword) {
-		List<BoardDto> boardList = boardService.getBoardList(page, keyword);
-		
-		Long totalCount = boardService.getBoardCount(keyword);
-		
+
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity getBoards(@RequestParam(value = "page") Integer page, @RequestParam(value = "perPage") Integer perPage,
+			@RequestParam(value = "search", required = false) String searchParam) {
 		Map<String, Object> pagination = new HashMap<>();
 		pagination.put("page", page);
+		PageVO pageVO = PageVO.builder().page(page).perPage(perPage).build();
+		pageVO.calcPage();
+		
+		List<BoardDto> boardList = boardService.getBoards(pageVO, searchParam);
+		Long totalCount = boardService.getBoardCount(searchParam);
+
 		pagination.put("totalCount", totalCount);
-		AppUtil appUtil = new AppUtil(boardList, pagination);
-		
-		return ResponseEntity.ok(appUtil.getData());
+		GridUtil gridUtil = new GridUtil(boardList, pagination);
+
+		return ResponseEntity.ok(gridUtil.getData());
 	}
-	
+
 	/*
-	 * @GetMapping(value="/get", produces = MediaType.APPLICATION_JSON_VALUE) public
-	 * ResponseEntity getBoards(@RequestParam(value="page", required = false)
-	 * Integer page,
-	 * 
-	 * @RequestParam(value="keyword", required = false) String keyword) {
-	 * List<BoardDto> boardList = boardService.getBoardList(page, keyword);
-	 * Integer[] pageList = boardService.getPageList(page, keyword); Map<String,
-	 * Object> response = new HashMap<>(); response.put("boardList", boardList);
-	 * response.put("pageList", pageList); return ResponseEntity.ok(response); }
-	 */
-	
-	@GetMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<BoardDto> get(@PathVariable("no") Long no) {
-		return ResponseEntity.ok(boardService.getPost(no));
+	@GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity getBoards(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "keyword", required = false) String keyword) {
+		List<BoardDto> boardList = boardService.getBoardList(page, keyword);
+		Integer[] pageList = boardService.getPageList(page, keyword);
+		Map<String, Object> response = new HashMap<>();
+		response.put("boardList", boardList);
+		response.put("pageList", pageList);
+		return ResponseEntity.ok(response);
 	}
+	*/
 	
-	@PostMapping(value="/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity add(@RequestBody @Valid BoardDto param, Errors errors) {
+	@GetMapping(value = "/reply/{no}")
+	public ResponseEntity getReplys(@PathVariable("no") Long no) {
+		return ResponseEntity.ok(boardService.getReplys(no));
+	}
+
+	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity addBoard(@RequestBody @Valid BoardDto param, Errors errors) {
 		List<Map<String, String>> errorList = new ArrayList<>();
-		
-		if(errors.hasErrors()) {
+
+		if (errors.hasErrors()) {
 			for (FieldError value : errors.getFieldErrors()) {
 				Map<String, String> map = new HashMap<>();
-				System.out.println(value.getDefaultMessage());
 				map.put(value.getField(), value.getDefaultMessage());
 				errorList.add(map);
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
-		boardService.add(param);
+		boardService.addBoard(param);
 		return ResponseEntity.ok(null);
 	}
 	
-	@PutMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity edit(@RequestBody @Valid BoardDto param, @PathVariable("no") Long no) {
+	@PostMapping(value = "/reply", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity addReply(@RequestBody @Valid ReplyDto param, Errors errors) {
+		List<Map<String, String>> errorList = new ArrayList<>();
 		
-		param.setId(no);
-		boardService.add(param);
+		if (errors.hasErrors()) {
+			for (FieldError value : errors.getFieldErrors()) {
+				Map<String, String> map = new HashMap<>();
+				map.put(value.getField(), value.getDefaultMessage());
+				errorList.add(map);
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
+		}
+		boardService.addReply(param);
 		return ResponseEntity.ok(null);
 	}
-	
-	@DeleteMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity delete(@PathVariable("no") Long no) {
-		boardService.delete(no);
+
+	@PutMapping(value = "/{no}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity editBoard(@RequestBody @Valid BoardDto param, @PathVariable("no") Long no, Errors errors) {
+		List<Map<String, String>> errorList = new ArrayList<>();
+
+		if (errors.hasErrors()) {
+			for (FieldError value : errors.getFieldErrors()) {
+				Map<String, String> map = new HashMap<>();
+				map.put(value.getField(), value.getDefaultMessage());
+				errorList.add(map);
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
+		}
+		param.setId(no);
+		boardService.addBoard(param);
+		return ResponseEntity.ok(null);
+	}
+
+	@DeleteMapping(value = "/{no}")
+	public ResponseEntity deleteBoard(@PathVariable("no") Long no) {
+		boardService.deleteBoard(no);
 		return ResponseEntity.ok(null);
 	}
 }

@@ -20,15 +20,12 @@
 							<div class="row">
 						    	<div class="col">
 							        <div class="search">
-							            <input name="keyword" type="text" class="form-control" placeholder="검색어를 입력해주세요">
+							            <input name="search" type="text" class="form-control" placeholder="검색어를 입력해주세요">
 							        </div>
 								</div>
 								<div class="col">
 							        <button id="search-btn" class="btn btn-primary mb-3">검색</button>
 							    </div>
-								<div class="col">
-						        <button class="btn btn-primary mb-3" id="add-btn">글쓰기</button>
-						    	</div>
 							</div>
 						</div>
 					</div>
@@ -37,14 +34,11 @@
 					<div class="card mb-4">
 						<div class="card-header">
 						    <i class="fas fa-table me-1"></i>
-						    Table
+						    Board
 						</div>
 						<div class="card-body">
 							<div id="grid"></div>
-						    <div style="display: inline-block; text-align: center;">
-						    	<ul id="page" class="pagination">
-						    	</ul>
-						    </div>
+							<button class="btn btn-primary mb-3" id="add-btn">글쓰기</button>
 						</div>
 					</div>
 				</div>
@@ -59,7 +53,7 @@
 <script src="<c:url value='/js/common.js'/>"></script>
 <script>
 	document.getElementById("search-btn").addEventListener("click", (e) => {
-		getBoard(1);
+		grid.readData(1, {search: $("input[name = search]").val()});
 	});
 	
 	document.getElementById("add-btn").addEventListener("click", (e) => {
@@ -77,46 +71,59 @@
 			return this.el;
 		}
     }
-			const columnData = [{
-		         header: '번호',
-		         name: 'id',
-		         sortingType: 'asc',
-		         width: '100',
-		         renderer: {
-		             type: RowNumberRenderer
-	         }
-		     },
-		     {
-		         header: '제목',
-		         name: 'title',
-		         sortingType: 'asc',
-		         sortable: true,
-		         width: '100'
-		     },
-		     {
-		         header: '작성자',
-		         name: 'writer',
-		         sortingType: 'asc',
-		         sortable: true,
-		         width: '250'
-		     },
-		     {
-		         header: '작성일',
-		         name: 'createdDate',
-		         sortingType: 'asc',
-		         sortable: true,
-		         width: '250'
-		     }
-		 ];
-	 
+	
+	class LinkRenderer {
+		constructor(props){
+			let func = function(){
+				let id = grid.getRow(props.rowKey).id;
+				location.href = "<c:url value='/board/'/>" + id;
+			};
+			
+			this.el = createEle_ahref(props,func);
+		}
+		getElement(){
+			return this.el;
+		}
+		getValue(){
+			return this.el.value;
+		}
+	}
+	
+	const columnData = [{
+	        header: '번호',
+	        name: 'num',
+	        renderer: {
+	            type: RowNumberRenderer
+			}
+	    },
+	    {
+	        header: '제목',
+	        name: 'title',
+	        sortingType: 'asc',
+	        sortable: true,
+	        renderer: {
+	            type: LinkRenderer
+			}
+	    },
+	    {
+	        header: '작성자',
+	        name: 'registrant'
+	    },
+	    {
+	        header: '작성일',
+	        name: 'createdDate'
+	    }
+	];
+	
 	const dataSource = {
 		api: {
-			readData: { url: "<c:url value='/api/board/get'/>", method: 'GET', initParams: {keyword: $("input[name = keyword]").val()}}
+			readData: { url: "<c:url value='/api/board/'/>", method: 'GET', initParams: {search: ""}}
 		},
 		contentType: 'application/json'
 	};
 	
 	const grid = createGrid_paging('grid', dataSource, columnData, 'auto', 10);
+	tui.Grid.applyTheme('clean');
 </script>
 </body>
 </html>

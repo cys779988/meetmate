@@ -1,5 +1,6 @@
 package com.spring.redis.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,30 +25,42 @@ import org.springframework.session.data.redis.config.ConfigureRedisAction;
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
-	@Value("${spring.redis.host}")
-	private String host;
+	@Value("${spring.redis.cache.host}")
+	private String redisCacheHost;
 	
-	@Value("${spring.redis.port}")
-	private int port;
-	
-	@Value("${spring.redis.channel}")
-	private String redisChannel;
+	@Value("${spring.redis.cache.port}")
+	private int redisCachePort;
 
+	@Value("${spring.redis.session.host}")
+	private String redisSessionHost;
+	
+	@Value("${spring.redis.session.port}")
+	private int redisSessionPort;
+	
 	@Bean
 	public ConfigureRedisAction configureRedisAction() {
 		return ConfigureRedisAction.NO_OP;
 	}
 
-	@Bean
-	public RedisConnectionFactory connectionFactory() {
+	@Bean(name = "redisCacheConnectionFactory")
+	public RedisConnectionFactory redisCacheConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-		redisStandaloneConfiguration.setHostName(host);
-		redisStandaloneConfiguration.setPort(port);
+		redisStandaloneConfiguration.setHostName(redisCacheHost);
+		redisStandaloneConfiguration.setPort(redisCachePort);
 		
 		LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
 		return lettuceConnectionFactory;
 	}
 	
+	@Bean
+	public RedisConnectionFactory redisConnectionFactory() {
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+		redisStandaloneConfiguration.setHostName(redisSessionHost);
+		redisStandaloneConfiguration.setPort(redisSessionPort);
+		
+		LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisStandaloneConfiguration);
+		return lettuceConnectionFactory;
+	}
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
 		final RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -59,7 +72,7 @@ public class RedisConfig {
 		//redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
 		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
 		
-		redisTemplate.setConnectionFactory(connectionFactory());
+		redisTemplate.setConnectionFactory(redisCacheConnectionFactory());
 		
 		return redisTemplate;
 	}
@@ -71,12 +84,12 @@ public class RedisConfig {
 	
 	@Bean
 	public ChannelTopic topic() {
-		return new ChannelTopic(redisChannel);
+		return new ChannelTopic("chatroom");
 	}
 
 	@Bean
 	@Primary
-	public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
+	public RedisMessageListenerContainer redisMessageListener(@Qualifier("redisCacheConnectionFactory") RedisConnectionFactory connectionFactory,
 														MessageListenerAdapter listenerAdapter,
 														ChannelTopic channelTopic) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();

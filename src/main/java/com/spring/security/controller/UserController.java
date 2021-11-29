@@ -11,12 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.common.config.LoginUser;
 import com.spring.security.model.SessionUser;
 import com.spring.security.model.UserDto;
-import com.spring.security.model.UserInformation;
 import com.spring.security.service.UserService;
 
 import lombok.AllArgsConstructor;
@@ -27,37 +26,27 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserController implements HttpSessionListener{
 	private UserService userService;
-
-	@GetMapping("/")
-	public String index(Model model, @LoginUser SessionUser user) {
-		
-		if(user != null) {
-			model.addAttribute("userName", user.getName());
-		}
-		return "/index";
-	}
-
-	@ResponseBody
-	@GetMapping("/api/user")
-	public Object getUserInfo() {
-		return SecurityContextHolder.getContext().getAuthentication();
-	}
 	
 	@GetMapping("/user/signup")
-	public String dispSignup(Model model) {
+	public String signupView(Model model) {
 		UserDto userDto = new UserDto();
 		model.addAttribute("userDto", userDto);
 		return "/user/signup";
 	}
 
 	@GetMapping("/user/password")
-	public String setPassword(Model model) {
+	public String passwordView(Model model) {
 		return "/user/password";
 	}
 
-	@ResponseBody
+	@PostMapping("/user/password")
+	public String resetPassword(UserDto userDto) {
+		userService.resetPassword(userDto);
+		return "/user/login";
+	}
+
 	@PostMapping("/user/signup")
-	public Long execSignup(@Valid UserDto userDto, Errors errors, Model model) {
+	public String signup(@Valid UserDto userDto, Errors errors, Model model) {
 		if(errors.hasErrors()) {
 			model.addAttribute("userDto", userDto);
 			
@@ -65,34 +54,37 @@ public class UserController implements HttpSessionListener{
 			for (String key : validatorResult.keySet()) {
 				model.addAttribute(key, validatorResult.get(key));
 			}
-			
-			//return "/signup";
-			return 1L;
+			return "/user/signup";
+		} else if(userService.findByEmail(userDto.getEmail())) {
+			model.addAttribute("valid_email", "해당 이메일 계정이 존재합니다.");
+			return "/user/signup";
+		} else {
+			userService.joinUser(userDto);
 		}
 		
-		//userService.joinUser(userDto);
-		return userService.joinUser(userDto);
+		return "redirect:/user/login";
 	}
 
 	@GetMapping("/user/login")
-	public String dispLogin() {
-		/*
-		ThreadLocal<UserInformation> local = new ThreadLocal<>();
-		UserInformation user = new UserInformation();
-		local.set(user);
-		UserInformation user2 = new UserInformation();
-		user2 = local.get();
-		*/
+	public String loginView() {
 		return "/user/login";
 	}
 
 	@GetMapping("/user/info")
-	public String dispMyInfo() {
+	public String userInfoView(@LoginUser SessionUser user, Model model) {
+		SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		model.addAttribute("user", user);
 		return "/user/myinfo";
 	}
 
 	@GetMapping("/admin")
-	public String dispAdmin() {
+	public String adminView() {
 		return "/admin";
+	}
+	
+	@GetMapping("/denied")
+	public String accessDenied(@RequestParam(value = "exception", required = false) String exception, Model model) {
+		model.addAttribute("exception", exception);
+		return "/errors/403";
 	}
 }

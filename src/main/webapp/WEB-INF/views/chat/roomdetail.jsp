@@ -29,33 +29,41 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-					<div>
-						<input type="hidden" value="${roomId}" name="roomId"> 
-					</div>
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<label class="input-group-text">내용</label>
+					<div class="card mb-4">
+						<div class="card-header">
+							<div>
+								<input type="hidden" value="${roomId}" name="roomId"> 
+							</div>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<label class="input-group-text">내용</label>
+								</div>
+								<input type="text" class="form-control" name="message">
+								<div class="input-group-append">
+									<button class="btn btn-primary" type="button" id="sendMessage">보내기</button>
+								</div>
+							</div>
 						</div>
-						<input type="text" class="form-control" name="message">
-						<div class="input-group-append">
-							<button class="btn btn-primary" type="button" id="sendMessage">보내기</button>
+						<div class="card-body">
+							<div class="container-fluid px-4">
+								<div class="chat">
+									<ul class="list-group" id="items">
+							       	</ul>
+						       	</div>
+							</div>
 						</div>
 					</div>
-					<div class="chat">
-						<ul class="list-group" id="items">
-				       	</ul>
-			       	</div>
 				</div>
 			</main>
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
+<script src="<c:url value='/webjars/axios/0.17.1/dist/axios.min.js'/>"></script>
+<script src="<c:url value='/webjars/sockjs-client/1.1.2/sockjs.min.js'/>"></script>
+<script src="<c:url value='/webjars/stomp-websocket/2.3.3-1/stomp.min.js'/>"></script>
 <script>
 
-	var sock = new SockJS("/ws-stomp");
+	var sock = new SockJS("<c:url value='/ws-stomp'/>");
 	var ws = Stomp.over(sock);
 	var messages = [];
 	var roomId = document.getElementsByName('roomId')[0].value;
@@ -64,6 +72,9 @@
 		created();
 	});
 	
+	window.onbeforeunload = function(){
+		ws.disconnect();
+	}
 	
 	document.getElementById('sendMessage').addEventListener('keyup', (e) => {
 		if(e.keyCode === 13){
@@ -79,6 +90,8 @@
 		var _this = this;
 		axios.get("<c:url value='/chat/user'/>").then(response => {
 			_this.token = response.data.token;
+			console.log(_this.token);
+			console.log(_this.roomId);
 			ws.connect({"token" : _this.token}, function(frame){
 				ws.subscribe("<c:url value='/sub/chat/room/'/>"+ _this.roomId, function(message){
 					var recv = JSON.parse(message.body);
@@ -87,7 +100,6 @@
 				_this.sendMessage('ENTER');
 			}, function(error) {
 				alert('서버 연결에 실패했습니다.');
-				//location.href = "/chat/room";
 			})
 		})
 	}

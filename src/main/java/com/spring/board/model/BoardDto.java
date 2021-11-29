@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 
+import com.spring.security.model.UserEntity;
+
 @Getter
 @Setter
 @ToString
@@ -13,23 +15,20 @@ import javax.validation.constraints.NotBlank;
 public class BoardDto {
     private Long id;
     
-    @NotBlank(message = "작성자는 필수값입니다.")
-    private String writer;
+    private String registrant;
     
-    @NotBlank(message = "제목은 필수값입니다.")
+    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
     
-    @NotBlank(message = "내용은 필수값입니다.")
+    @NotBlank(message = "내용을 입력해주세요.")
     private String content;
     
     private LocalDateTime createdDate;
     
-    private LocalDateTime modifiedDate;
-
     public BoardEntity toEntity(){
         BoardEntity boardEntity = BoardEntity.builder()
                 .id(id)
-                .writer(writer)
+                .registrant((UserEntity.builder().email(registrant)).build())
                 .title(title)
                 .content(content)
                 .build();
@@ -37,12 +36,11 @@ public class BoardDto {
     }
 
     @Builder
-    public BoardDto(Long id, String title, String content, String writer, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public BoardDto(Long id, String registrant, String title, String content, LocalDateTime createdDate) {
         this.id = id;
-        this.writer = writer;
+        this.registrant = registrant;
         this.title = title;
         this.content = content;
         this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 }

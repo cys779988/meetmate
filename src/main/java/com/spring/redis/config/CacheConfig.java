@@ -1,6 +1,7 @@
 package com.spring.redis.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -19,13 +20,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CacheConfig {
 	
 	@Autowired
-	RedisConnectionFactory redisConnectionFactory;
-	
-	@Autowired
 	ObjectMapper objectMapper;
 	
 	@Bean
-	public CacheManager redisCacheManager() {
+	public CacheManager redisCacheManager(@Qualifier("redisCacheConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
 		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
 															.serializeKeysWith(RedisSerializationContext
 																				.SerializationPair

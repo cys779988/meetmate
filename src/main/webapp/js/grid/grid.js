@@ -39,7 +39,8 @@
 	                type: 'checkbox'
 				}
 	        ],
-	        columns: columnData
+	        columns: columnData,
+	        showDummyRows: true
 	      });
 	}
 	
@@ -81,7 +82,8 @@
 			},
 			rowHeaders: rowHeaders,
 			header: header,
-			columns: columnData
+			columns: columnData,
+	        showDummyRows: true
 		});;
 	}
 	

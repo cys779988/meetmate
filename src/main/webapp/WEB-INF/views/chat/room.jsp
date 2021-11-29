@@ -15,29 +15,33 @@
 			<main>
 				<div class="container-fluid px-4">
 					<div class="card mb-4">
-						<div class="card-body">
-							<div class="input-group">
-								<div class="input-group-prepend">
-									<label class="input-group-text">방제목</label>
+						<div class="card-header">
+							<div class="mb10 mt10">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<label class="input-group-text">방제목</label>
+									</div>
+									<input type="text" class="form-control w200" name="room_name">
+									<div class="input-group-append">
+						                <button class="btn btn-primary" type="button" id="create-btn">채팅방 개설</button>
+						            </div>
 								</div>
-								<input type="text" class="form-control" name="room_name">
-								<div class="input-group-append">
-					                <button class="btn btn-primary" type="button" id="create-btn">채팅방 개설</button>
-					            </div>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="container-fluid px-4">
+								<ul class="list-group" id="items">
+							    </ul>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="container-fluid px-4">
-					<ul class="list-group" id="items">
-				    </ul>
 				</div>
 			</main>
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
-<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="<c:url value='/webjars/axios/0.17.1/dist/axios.min.js'/>"></script>
+<script src="<c:url value='/webjars/sockjs-client/1.1.2/sockjs.min.js'/>"></script>
 <script>
 	
 	window.addEventListener('DOMContentLoaded', (e) => {
@@ -59,8 +63,9 @@
 				var items = document.getElementById('items');
 				result.forEach(data => {
 					var li = document.createElement('li');
-					var a = document.createElement('span');
+					var a = document.createElement('a');
 					li.className = 'list-group-item list-group-item-action';
+					a.href = "#";
 					a.innerText = data.name;
 					li.appendChild(a);
 					items.appendChild(li);
@@ -93,7 +98,7 @@
 	})
 	
 	function enterRoom(roomId) {
-	    localStorage.setItem('wschat.sender', '${sessionScope.user.name}');
+	    localStorage.setItem('wschat.sender', '${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.name}');
 	    localStorage.setItem('wschat.roomId', roomId);
 		location.href="<c:url value='/chat/room/enter/'/>" + roomId;
 	}

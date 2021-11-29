@@ -26,8 +26,6 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath email = createString("email");
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 

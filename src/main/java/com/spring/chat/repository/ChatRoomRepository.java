@@ -1,19 +1,14 @@
 package com.spring.chat.repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
 
 import com.spring.chat.model.ChatRoom;
-import com.spring.redis.service.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 

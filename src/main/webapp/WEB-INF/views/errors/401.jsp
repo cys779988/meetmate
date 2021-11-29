@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>401 Error - SB Admin</title>
+        <title>401 Error</title>
         <link href="<c:url value='/css/styles.css'/>" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
@@ -25,7 +25,7 @@
                                     <p>Access to this resource is denied.</p>
                                     <a href="<c:url value='/'/>">
                                         <i class="fas fa-arrow-left me-1"></i>
-                                        Return to Dashboard
+                                        Return to Home
                                     </a>
                                 </div>
                             </div>

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -16,6 +17,8 @@ import com.querydsl.core.types.Path;
 public class QBoardEntity extends EntityPathBase<BoardEntity> {
 
     private static final long serialVersionUID = -405249240L;
+
+    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QBoardEntity boardEntity = new QBoardEntity("boardEntity");
 
@@ -31,20 +34,31 @@ public class QBoardEntity extends EntityPathBase<BoardEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDate = _super.modifiedDate;
 
+    public final com.spring.security.model.QUserEntity registrant;
+
+    public final ListPath<ReplyEntity, QReplyEntity> reply = this.<ReplyEntity, QReplyEntity>createList("reply", ReplyEntity.class, QReplyEntity.class, PathInits.DIRECT2);
+
     public final StringPath title = createString("title");
 
-    public final StringPath writer = createString("writer");
-
     public QBoardEntity(String variable) {
-        super(BoardEntity.class, forVariable(variable));
+        this(BoardEntity.class, forVariable(variable), INITS);
     }
 
     public QBoardEntity(Path<? extends BoardEntity> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QBoardEntity(PathMetadata metadata) {
-        super(BoardEntity.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QBoardEntity(PathMetadata metadata, PathInits inits) {
+        this(BoardEntity.class, metadata, inits);
+    }
+
+    public QBoardEntity(Class<? extends BoardEntity> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.registrant = inits.isInitialized("registrant") ? new com.spring.security.model.QUserEntity(forProperty("registrant")) : null;
     }
 
 }

@@ -1,8 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -14,21 +13,55 @@
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-				    <form action="<c:url value='/api/board/${boardDto.id}'/>">
-				        <input type="hidden" name="_method" value="put"/>
-				        <input type="hidden" name="id" value="${boardDto.id}"/>
-				
-				        제목 : <input type="text" name="title" value="${boardDto.title}"> <br>
-				        작성자 : <input type="text" name="writer" value="${boardDto.writer}"> <br>
-				        <textarea name="content">${boardDto.content}</textarea><br>
-				
-				        <input type="submit" value="수정">
-				    </form>
+				<h2>Board Update</h2>
+					<form name="form" id="form" role="form">
+						<div class="mb-3">
+							<input type="text" class="form-control" name="title" id="title" value="${boardDto.title}" placeholder="제목">
+						    <div>
+						    	<p id="titleError"></p>
+						    </div>
+						</div>
+						<div class="mb-3">
+							<textarea class="form-control" rows="5" name="content" id="content" placeholder="내용">${boardDto.content}</textarea>
+							<div>
+						    	<p id="contentError"></p>
+						    </div>
+						</div>
+					</form>
+					<div>
+						<button class="btn btn-primary mb-3" id="regist-btn">등록</button>
+						<button class="btn btn-primary mb-3" id="list-btn">목록</button>
+					</div>
 				</div>
 			</main>
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
 	</div>
-
+<script src="<c:url value='/js/common.js'/>" ></script> 
+<script>
+document.getElementById('regist-btn').addEventListener("click", (e)=> {
+	e.preventDefault();
+	const data = $("#form").serializeObject();
+	
+	$.ajax({
+		url : "<c:url value='/api/board/${boardDto.id}'/>",
+		method : "put",
+		data : JSON.stringify(data),
+		contentType : "application/json",
+		success : function(result) {
+			console.log(result);
+			location.href = "<c:url value='/board/'/>";
+		},
+		error : function(result){
+			$('p').empty();
+			var messages = JSON.parse(result.responseText);
+			
+			messages.forEach(error => {
+				$('#'+Object.getOwnPropertyNames(error)+'Error').append(Object.values(error));
+			});
+		}
+	});
+})
+</script>
 </body>
 </html>

@@ -13,7 +13,6 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
 
 	@Override
 	public boolean matches(HttpServletRequest request) {
-		// TODO Auto-generated method stub
 		if (allowRequestMethod.matcher(request.getMethod()).matches()) {
 			return false;
 		}

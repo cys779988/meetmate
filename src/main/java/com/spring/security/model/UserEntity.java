@@ -1,12 +1,13 @@
 package com.spring.security.model;
 
 
+
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,20 +16,21 @@ import com.spring.common.model.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Users")
-public class UserEntity extends BaseTimeEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(name = "tb_users")
+public class UserEntity extends BaseTimeEntity implements Serializable {
+	
+	private static final long serialVersionUID = -6230866903313613836L;
 
     @Column(nullable = false)
     private String name;
 
+    @Id
     @Column(nullable = false)
     private String email;
 
@@ -37,7 +39,7 @@ public class UserEntity extends BaseTimeEntity {
     
     @Column
     private String picture;
-
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

@@ -12,11 +12,13 @@
 	                                Dashboard
 	                            </a>
                             </sec:authorize>
-                            <a class="nav-link" href="<c:url value='/user/signup'/>">
-                                <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
-                                SignUp
-                            </a>
-                            <div class="sb-sidenav-menu-heading">Interface</div>
+                            <sec:authorize access="isAnonymous()">
+	                            <a class="nav-link" href="<c:url value='/user/signup'/>">
+	                                <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
+	                                SignUp
+	                            </a>
+                            </sec:authorize>
+                            <!-- <div class="sb-sidenav-menu-heading">Interface</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Layouts
@@ -27,8 +29,8 @@
                                     <a class="nav-link" href="#">Static Navigation</a>
                                     <a class="nav-link" href="#">Light Sidenav</a>
                                 </nav>
-                            </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                            </div> -->
+                            <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
                                 Pages
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
@@ -56,9 +58,9 @@
                                         </nav>
                                     </div>
                                 </nav>
-                            </div>
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-	                            <a class="nav-link" href="#">
+                            </div> -->
+                            <div class="sb-sidenav-menu-heading">MENU</div>
+	                            <a class="nav-link" href="<c:url value='/'/>">
 		                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
 		                            Chart
 	                            </a>
@@ -66,13 +68,17 @@
 		                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 		                            Board
 	                            </a>
-	                            <a class="nav-link" href="<c:url value='/board/courseList'/>">
+	                            <a class="nav-link" href="<c:url value='/course/'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 	                            	Course
 	                            </a>
 	                            <a class="nav-link" href="<c:url value='/chat/room'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
 	                            	Chat
+	                            </a>
+	                            <a class="nav-link" href="<c:url value='/group/'/>">
+	                            	<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+	                            	Group
 	                            </a>
                         </div>
                     </div>

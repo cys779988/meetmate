@@ -11,7 +11,7 @@ import com.spring.board.model.QBoardEntity;
 public class BoardRepositorySupport extends QuerydslRepositorySupport{
 	
 	private final JPAQueryFactory queryFactory;
-	
+	QBoardEntity boardEntity = QBoardEntity.boardEntity;
 	public BoardRepositorySupport(JPAQueryFactory queryFactory) {
 		super(BoardEntity.class);
 		this.queryFactory = queryFactory;
@@ -19,8 +19,8 @@ public class BoardRepositorySupport extends QuerydslRepositorySupport{
 	
 	public Long findCountByTitle(String title) {
 		return queryFactory
-				.selectFrom(QBoardEntity.boardEntity)
-				.where(QBoardEntity.boardEntity.title.like(title+"%"))
+				.selectFrom(boardEntity)
+				.where(boardEntity.title.like(title+"%"))
 				.fetchCount();
 	}
 }
