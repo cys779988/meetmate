@@ -93,7 +93,7 @@
 			console.log(_this.token);
 			console.log(_this.roomId);
 			ws.connect({"token" : _this.token}, function(frame){
-				ws.subscribe("<c:url value='/sub/chat/room/'/>"+ _this.roomId, function(message){
+				ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message){
 					var recv = JSON.parse(message.body);
 					_this.recvMessage(recv);
 				});
@@ -106,7 +106,7 @@
 	
 	function sendMessage(type) {
 		var message = document.getElementsByName('message')[0].value;
-		ws.send("<c:url value='/pub/chat/message'/>"
+		ws.send("/pub/chat/message"
 				, {"token" : token}
 				, JSON.stringify({
 					type : type
