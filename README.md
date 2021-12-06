@@ -34,7 +34,7 @@
 ```
 docker network create redis-net
 
-docker run --name redis-db -p 6379:6379 --network redis-net -v C:\docker-redis:/data -d redis redis-server --appendonly yes
+docker run --name redis-cache -p 6379:6379 --network redis-net -v C:\docker-redis\cache:/data/cache -d redis redis-server --appendonly yes
 
-docker run --name redis-cli -it --network redis-net --rm redis redis-cli -h redis-d
+docker run --name redis-session -p 6380:6379 --network redis-net -v C:\docker-redis\session:/data/session -d redis redis-server --appendonly yes
 ```  
