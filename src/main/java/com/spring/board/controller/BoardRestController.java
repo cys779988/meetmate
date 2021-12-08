@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.board.model.BoardDto;
 import com.spring.board.model.ReplyDto;
 import com.spring.board.service.BoardService;
+import com.spring.common.model.PageVO;
 import com.spring.common.util.GridUtil;
-import com.spring.common.util.PageVO;
 
 import lombok.AllArgsConstructor;
 
@@ -44,7 +44,6 @@ public class BoardRestController {
 		Map<String, Object> pagination = new HashMap<>();
 		pagination.put("page", page);
 		PageVO pageVO = PageVO.builder().page(page).perPage(perPage).build();
-		pageVO.calcPage();
 		
 		List<BoardDto> boardList = boardService.getBoards(pageVO, searchParam);
 		Long totalCount = boardService.getBoardCount(searchParam);

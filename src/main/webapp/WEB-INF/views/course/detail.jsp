@@ -9,7 +9,7 @@
 #cy {
 	position: absolute;
 	width: 1600px;
-	height: 700px;
+	height: 900px;
 	display: block;
 }
 
@@ -54,7 +54,7 @@ h1 {
 							</div>
 						</div>
 						<div class="tab-pane fade show active" id="detail">
-							<div style="height: 700px;">
+							<div style="height: 900px;">
 						    	<div class="border border-dark" id="cy"></div>
 							</div>
 						</div>
@@ -93,9 +93,15 @@ h1 {
 <script src="<c:url value='/js/cytoscape/cytoscape.js'/>"></script>
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
 <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+<script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
+<script src="https://unpkg.com/klayjs@0.4.1/klay.js"></script>
+<script src="https://unpkg.com/dagre@0.7.4/dist/dagre.js"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-popper.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-edgehandles.js'/>"></script>
-<script src="<c:url value='/js/cytoscape/cytoscape-cose-bilkent.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-euler.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-klay.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-avsdf.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-dagre.js'/>"></script>
 <%-- <script src="<c:url value='/js/cytoscape/cytoscape-tippy.js'/>"></script> --%>
 <script>
 	document.getElementById('list-btn').addEventListener('click',(e) => {
@@ -142,27 +148,28 @@ h1 {
 					elements : data,
 					style: [
 		        		{
-		        		selector: 'node',
-		        		elements: data.nodes,
-		        		style: {
-		        			'content': 'data(name)',
-		        	        'text-valign': 'center',
-		        	        'color': 'white',
-		        	        'text-outline-width': 1,
-		        	        'text-outline-color': '#888',
-		        	        'background-color': '#888',
-		        	        'shape' : 'data(shape)',
-		                    'width': function (ele) {
-		                        return nodeMaxSize / pageRank.rank('#' + ele.id()) + nodeMinSize;
-		                    },
-		                    'height': function (ele) {
-		                        return nodeMaxSize / pageRank.rank('#' + ele.id()) + nodeMinSize;
-		                    },
-		                    'font-size': function (ele) {
-		                        return fontMaxSize / pageRank.rank('#' + ele.id()) + fontMinSize;
-		                    }
-		                }
-		            	},
+			        	selector: ':childless',
+			        	elements: data.nodes,
+			        	style: {
+			        		'content': 'data(name)',
+			        	    'text-valign': 'center',
+			        	    'color': 'white',
+			        	    'text-outline-width': 1,
+			        	    'text-outline-color': '#dd4de2',
+			        	    'font-size' : 7,
+			        	    'shape' : 'data(shape)',
+			        	    'width' : 'data(size)',
+			        	    'height' : 'data(size)'
+			            }
+			            },
+			            {
+							selector: ':parent',
+			        		elements: data.nodes,
+			                css: {
+			                	'text-valign': 'top',
+			                    'text-halign': 'center',
+			                }
+			            },
 			            {
 			              selector: 'edge',
 			              elements: data.edges,
@@ -223,9 +230,12 @@ h1 {
 			                'opacity': 0
 			              }
 			            }
-			          ]
+			          ],
+			          layout: {
+			        	  name:'preset'
+			          }
+			
 			});
-			document.querySelector('#detail').classList.remove('show', 'active');
 			
 		}).then(() => {
 		    cy.nodes().forEach(node => {
@@ -235,19 +245,28 @@ h1 {
 				snap: false
 			});
 			cy.userZoomingEnabled(false);
-			window.cyLayout = function cyLayout(){
-				let layout = cy.layout({
-			        name: 'cose-bilkent',
-					nodeOverlap: 20,
-			        refresh: 20,
-					randomize: false,
-			        gravityRangeCompound: 1.5,
-			        fit: true,
-			        tile: true
-				});
-				layout.run();
-			};
-			cyLayout();
+/* 			window.layoutArr = [
+				{
+				    name: 'dagre'
+				},
+				{
+				    name: 'avsdf',
+					animate: "during",
+					animationDuration: 1000,
+					animationEasing: 'ease-in-out',
+					nodeSeparation: 120
+				},
+				{
+				    name: 'klay'
+				},
+				{
+				    name: 'euler',
+					randomize: true,
+					animate: false
+			}];
+			window.cyLayout = cy.layout(layoutArr[data.layout]);
+			cyLayout.run(); */
+			document.querySelector('#detail').classList.remove('show', 'active');
 		})
 	});
 	
@@ -287,8 +306,10 @@ h1 {
 	}
 	
 	var makeTippy = function(ele, text){
+		if(!text || !text.trim()){
+			return false;
+		}
 		var ref = ele.popperRef();
-		console.log(ele);
 		// Since tippy constructor requires DOM element/elements, create a placeholder
 		var domEle = document.querySelector('#cy');
 

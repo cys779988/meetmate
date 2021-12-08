@@ -9,7 +9,7 @@
 #cy {
 	position: absolute;
 	width: 1600px;
-	height: 700px;
+	height: 900px;
 	display: block;
 }
 
@@ -82,7 +82,7 @@ h1 {
 							</form>
 						</div>
 						<div class="tab-pane fade show active" id="detail">
-							<div style="height: 700px;">
+							<div style="height: 900px;">
 						    	<div class="border border-dark" id="cy"></div>
 							</div>
 						    <div>
@@ -92,6 +92,9 @@ h1 {
 									</div>
 									<div class="col-auto">
 										<input type="text" class="form-control" id="addContent1" placeholder="Node Content" maxlength="20">
+									</div>
+									<div class="col-auto">
+										<input type="number" class="form-control" id="addSize1" placeholder="Node Size" maxlength="2">
 									</div>
 									<div class="col-auto">
 								        <select class="form-select" id="addShape1">
@@ -106,6 +109,18 @@ h1 {
 								      <button class="btn btn-outline-dark" id="sipNode-add-btn">노드추가</button>
 								      <button class="btn btn-outline-dark" id="drawOn-btn">그리기모드 on</button>
 								      <button class="btn btn-outline-dark" id="drawOff-btn">그리기모드 off</button>
+								    </div>
+									<div class="col-auto">
+	                                   	<select class="form-select" id="selectLayout">
+	                                   		<option value="0" selected="selected">layout1</option>
+	                                   		<option value="1">layout2</option>
+	                                   		<option value="2">layout3</option>
+	                                   		<option value="3">layout4</option>
+	                                   	</select>
+                                   	</div>
+									<div class="col-auto">
+								        <input id="remove-1ch-parents" type="checkbox" value="false" />
+								        <label for="remove-1ch-parents">자식노드 1개인 부모노드 제거</label>
 								    </div>
 								</div>
 						    </div>
@@ -154,6 +169,12 @@ h1 {
 							                                    </td>
 							                                </tr>
 							                                <tr>
+							                                    <th>size</th>
+							                                    <td colspan="3">
+							                                        <input type="number" class="form-control" id="nodeSize" maxlength="2">
+							                                    </td>
+							                                </tr>
+							                                <tr>
 							                                    <th>shape</th>
 							                                    <td colspan="3">
 							                                    	<select class="form-select" id="nodeShape">
@@ -191,6 +212,12 @@ h1 {
 							                                    <th>content</th>
 							                                    <td colspan="3">
 							                                        <input type="text" class="form-control" id="addContent" maxlength="20">
+							                                    </td>
+							                                </tr>
+							                                <tr>
+							                                    <th>size</th>
+							                                    <td colspan="3">
+							                                        <input type="number" class="form-control" id="addSize" maxlength="2">
 							                                    </td>
 							                                </tr>
 							                                <tr>
@@ -232,9 +259,16 @@ h1 {
 <script src="<c:url value='/js/cytoscape/cytoscape.js'/>"></script>
 <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
 <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+<script src="https://unpkg.com/avsdf-base/avsdf-base.js"></script>
+<script src="https://unpkg.com/klayjs@0.4.1/klay.js"></script>
+<script src="https://unpkg.com/dagre@0.7.4/dist/dagre.js"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-popper.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-edgehandles.js'/>"></script>
-<script src="<c:url value='/js/cytoscape/cytoscape-cose-bilkent.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-euler.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-klay.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-avsdf.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-dagre.js'/>"></script>
+<script src="<c:url value='/js/cytoscape/cytoscape-compound.js'/>"></script>
 <%-- <script src="<c:url value='/js/cytoscape/cytoscape-tippy.js'/>"></script> --%>
 <script>
 	const myModal = new bootstrap.Modal(document.getElementById('myModal'), {
@@ -247,35 +281,44 @@ h1 {
 		  	edges: []
 		};
 		window.cy_for_rank, window.pageRank, window.cy, window.eh, window.tippyEl = [];
-	    
-		let main = {
+		
+		data.nodes.push({
 			"data" : {
 				"id" : "Main",
 				"name" : "Main",
 				"content" : "Main",
-				"shape" : "star"
+				"shape" : "star",
+				"size" : 30,
+				"font" : 7
 			}
-		};
-		
-		data.nodes.push(main);
+		});
 		
 		cy = cytoscape({
 	          container: document.getElementById('cy'),
 				elements : data,
 				style: [
 	        		{
-	        		selector: 'node',
+	        		selector: ':childless',
 	        		elements: data.nodes,
 	        		style: {
 	        			'content': 'data(name)',
 	        	        'text-valign': 'center',
 	        	        'color': 'white',
-	        	        'text-outline-width': 2,
-	        	        'text-outline-color': '#888',
-	        	        'background-color': '#888',
+	        	        'text-outline-width': 1,
+	        	        'text-outline-color': '#dd4de2',
 	        	        'font-size' : 7,
-	        	        'shape' : 'data(shape)'
+	        	        'shape' : 'data(shape)',
+	        	        'width' : 'data(size)',
+	        	        'height' : 'data(size)'
 	                }
+	            	},
+	            	{
+						selector: ':parent',
+		        		elements: data.nodes,
+	            	    css: {
+	            	    	'text-valign': 'top',
+	            	        'text-halign': 'center',
+	            	    }
 	            	},
 		            {
 		              selector: 'edge',
@@ -336,6 +379,25 @@ h1 {
 		              style: {
 		                'opacity': 0
 		              }
+		            },
+		            {
+		                selector: '.cdnd-grabbed-node',
+		                style: {
+		                  'background-color': 'red'
+		                }
+		            },
+		            {
+		              selector: '.cdnd-drop-sibling',
+		              style: {
+		              	'background-color': 'red'
+		              }
+		            },
+	              	{
+		              selector: '.cdnd-drop-target',
+		              style: {
+		                'border-color': 'red',
+		                'border-style': 'dashed'
+		              }
 		            }
 		          ]
 		});
@@ -348,19 +410,36 @@ h1 {
 			snap: false
 		});
 		cy.userZoomingEnabled(false);
+		window.layoutArr = [
+		{
+		    name: 'dagre'
+		},
+		{
+		    name: 'avsdf',
+			animate: "during",
+			animationDuration: 1000,
+			animationEasing: 'ease-in-out',
+			nodeSeparation: 120
+		},
+		{
+		    name: 'klay'
+		},
+		{
+		    name: 'euler',
+			randomize: true,
+			animate: false
+		},
+		/* {
+		    name: 'preset',
+		    padding: 5
+		} */
+		];
 		window.cyLayout = function cyLayout(){
-			let layout = cy.layout({
-		        name: 'cose-bilkent',
-				nodeOverlap: 20,
-		        refresh: 20,
-				randomize: false,
-		        gravityRangeCompound: 1.5,
-		        fit: true,
-		        tile: true
-			});
+			let selectLayout = document.getElementById('selectLayout').value;
+			
+			let layout = cy.layout(layoutArr[selectLayout]);
 			layout.run();
 		};
-		
 		
 		cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
 			let { position } = event;
@@ -373,14 +452,51 @@ h1 {
 			document.getElementById('nodeId').value = e.target._private.data.name;
 			document.getElementById('nodeContent').value = e.target._private.data.content;
 			document.getElementById('nodeShape').value = e.target._private.data.shape;
+			document.getElementById('nodeSize').value = e.target._private.data.size;
 		});
 		
 		cy.on('tap', 'edge', e => {
-			console.log(e.target);
 			let check = confirm("Edge를 삭제하시겠습니까?");
 			if(check){
 				cy.remove(e.target);
 			}
+		});
+		
+		var cdnd = cy.compoundDragAndDrop();
+        var removeEmptyParents = false;
+
+        var isParentOfOneChild = function(node){
+          return node.isParent() && node.children().length === 1;
+        };
+
+        var removeParent = function(parent){
+          parent.children().move({ parent: null });
+          parent.remove();
+        };
+
+        var removeParentsOfOneChild = function(){
+          cy.nodes().filter(isParentOfOneChild).forEach(removeParent);
+        };
+
+        // custom handler to remove parents with only 1 child on drop
+        cy.on('cdndout', function(event, dropTarget){
+          if( removeEmptyParents && isParentOfOneChild(dropTarget) ){
+            removeParent(dropTarget);
+          }
+        });
+
+        // custom handler to remove parents with only 1 child (on remove of drop target or drop sibling)
+        cy.on('remove', function(event){
+          if( removeEmptyParents ){
+            removeParentsOfOneChild();
+          }
+        });
+        document.getElementById('remove-1ch-parents').addEventListener('click', function(){
+            removeEmptyParents = !removeEmptyParents;
+
+            if( removeEmptyParents ){
+              removeParentsOfOneChild();
+            }
 		});
 	});
 	
@@ -395,11 +511,12 @@ h1 {
 	});
 	
 	var makeTippy = function(ele, text){
+		if(!text || !text.trim()){
+			return false;
+		}
 		var ref = ele.popperRef();
-		console.log(ele);
 		// Since tippy constructor requires DOM element/elements, create a placeholder
 		var domEle = document.querySelector('#cy');
-
 		var tip = tippy( domEle, {
 			getReferenceClientRect: ref.getBoundingClientRect,
 			content: function() {
@@ -433,20 +550,20 @@ h1 {
 		param.edge = []
 	    
 	    cy.nodes().forEach(e=> {
-	    	let data = { "data" : e._private.data }
+	    	let data = { "data" : e._private.data, "renderedPosition" : e._private.position }
 		  	param.node.push(data);
 	    })
 	    cy.edges().forEach(e=> {
-	    	let data = { "data" : e._private.data }
+	    	let data = { "data" : e._private.data}
 		  	param.edge.push(data);
 	    })
+	    param.layout = document.getElementById('selectLayout').value*1;
 		$.ajax({
 			url : "<c:url value='/api/course/'/>",
 			method : "post",
 			data : JSON.stringify(param),
 			contentType : "application/json",
 			success : function(result) {
-				console.log(result);
 				location.href = "<c:url value='/course/'/>";
 			},
 			error : function(result){
@@ -469,10 +586,12 @@ h1 {
 		let nodeId = document.getElementById('nodeId').value;
 		let content = document.getElementById('nodeContent').value;
 		let shape = document.getElementById('nodeShape').value;
+		let size = document.getElementById('nodeSize').value;
 		let node = cy.$('#' + id);
 		node.data('name', nodeId)
 		.data('content', content)
-		.data('shape', shape);
+		.data('shape', shape)
+		.data('size', size);
 		
 		tippyEl.find(data => {if(data.id === id) return true})
 				.popper._tippy.setContent(content);
@@ -483,7 +602,10 @@ h1 {
 	document.getElementById('addNode-btn').addEventListener('click', e => {
 		var node = cy.add({
 			group: 'nodes',
-			data: {name: document.getElementById('addId').value, content : document.getElementById('addContent').value, shape : document.getElementById('addShape').value}
+			data: {name: document.getElementById('addId').value
+				, content : document.getElementById('addContent').value
+				, shape : document.getElementById('addShape').value
+				, size : document.getElementById('addSize').value ? document.getElementById('addSize').value : 30}
 		});
 		
 		cy.add({
@@ -518,7 +640,10 @@ h1 {
 		}
 		let node = cy.add({
 			group: 'nodes',
-			data: {name: document.getElementById('addName1').value, content : document.getElementById('addContent1').value, shape : document.getElementById('addShape1').value}
+			data: {name: document.getElementById('addName1').value
+				, content : document.getElementById('addContent1').value
+				, shape : document.getElementById('addShape1').value
+				, size : document.getElementById('addSize1').value ? document.getElementById('addSize1').value : 30}
 		});
 		cyLayout();
 		makeTippy(node, node.data().content);
@@ -530,6 +655,10 @@ h1 {
     })
     tabEl.addEventListener('hidden.bs.tab', function (e) {
     	e.preventDefault();
+    })
+
+    document.querySelector('#selectLayout').addEventListener('change', function() {
+    	cyLayout();
     })
 </script>
 </body>

@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.common.model.PageVO;
 import com.spring.common.util.GridUtil;
-import com.spring.common.util.PageVO;
 import com.spring.course.model.CourseDto;
 import com.spring.course.service.CourseService;
 
@@ -43,7 +43,6 @@ public class CourseRestController {
 		Map<String, Object> pagination = new HashMap<>();
 		pagination.put("page", page);
 		PageVO pageVO = PageVO.builder().page(page).perPage(perPage).build();
-		pageVO.calcPage();
 		
 		List<CourseDto> contentsList =  courseService.getCourses(pageVO, searchParam);
 		Long totalCount = courseService.getCourseCount();

@@ -15,10 +15,9 @@ import com.spring.board.model.ReplyEntity;
 import com.spring.board.repository.BoardRepository;
 import com.spring.board.repository.BoardRepositorySupport;
 import com.spring.board.repository.ReplyRepository;
-import com.spring.common.util.PageVO;
+import com.spring.common.model.PageVO;
 import com.spring.common.util.AppUtil;
 import com.spring.security.model.UserEntity;
-import com.spring.security.repository.UserRepository;
 
 import javax.transaction.Transactional;
 

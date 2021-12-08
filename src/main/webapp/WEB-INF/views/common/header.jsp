@@ -14,7 +14,7 @@
 	    <!-- Sidebar Toggle-->
 	    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
 		<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-			<a class="navbar-brand ps-1">${sessionScope.user.name}  ${sessionScope.user.email}</a>
+			<a class="navbar-brand ps-1">${sessionScope.SPRING_SECURITY_CONTEXT.authentication.principal.email}</a>
 		</form>
 		<!-- Navbar-->
 		<ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">

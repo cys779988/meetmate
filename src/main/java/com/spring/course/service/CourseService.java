@@ -8,12 +8,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.spring.common.util.PageVO;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.common.model.PageVO;
 import com.spring.common.util.AppUtil;
 import com.spring.course.model.CategoryEntity;
 import com.spring.course.model.CourseDto;
@@ -21,9 +21,7 @@ import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CategoryRepository;
 import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
-import com.spring.group.repository.GroupRepository;
 import com.spring.security.model.UserEntity;
-import com.spring.security.repository.UserRepository;
 
 import javax.transaction.Transactional;
 
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Service
