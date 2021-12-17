@@ -8,8 +8,8 @@
 <style>
 #cy {
 	position: absolute;
-	width: 1600px;
-	height: 900px;
+	width: 1630px;
+	height: 1300px;
 	display: block;
 }
 
@@ -35,30 +35,16 @@ h1 {
 					<h2>${courseDto.title}</h2>
 					<p>[${courseDto.createdDate}]</p>
 				    <p>등록자 : ${courseDto.registrant}</p>
-					<div class="mb-3 mt-3">
-						<ul class="nav nav-tabs">
-						  <li class="nav-item">
-						    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#basic">기본정보</button>
-						  </li>
-						  <li class="nav-item">
-						    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detail">상세정보</button>
-						  </li>
-						</ul>
-					</div>
-					<div class="tab-content">
-						<div class="tab-pane fade show active" id="basic">
 						    <p>(현재인원 / 최대인원) ${courseDto.curNum} / ${courseDto.maxNum}</p>
 							<div class="mb-3" style="min-height: 500px;">
 								<label for="content"></label>
 								<p>${courseDto.content}</p>
 							</div>
-						</div>
 						<div class="tab-pane fade show active" id="detail">
-							<div style="height: 900px;">
+							<div style="height: 1300px;">
 						    	<div class="border border-dark" id="cy"></div>
 							</div>
 						</div>
-					</div>
 					<div class="mt-3">
 						<button class="btn btn-primary mb-3" id="list-btn">목록</button>
 						<c:choose>
@@ -98,11 +84,9 @@ h1 {
 <script src="https://unpkg.com/dagre@0.7.4/dist/dagre.js"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-popper.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-edgehandles.js'/>"></script>
-<script src="<c:url value='/js/cytoscape/cytoscape-euler.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-klay.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-avsdf.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-dagre.js'/>"></script>
-<%-- <script src="<c:url value='/js/cytoscape/cytoscape-tippy.js'/>"></script> --%>
 <script>
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
@@ -139,102 +123,93 @@ h1 {
 		}
 		
 		getData().then(data => {
-			const nodeMaxSize = 10;
-			const nodeMinSize = 5;
-			const fontMaxSize = 0.5;
-			const fontMinSize = 5;
 			cy = cytoscape({
 		          container: document.getElementById('cy'),
 					elements : data,
 					style: [
 		        		{
-			        	selector: ':childless',
-			        	elements: data.nodes,
-			        	style: {
-			        		'content': 'data(name)',
-			        	    'text-valign': 'center',
-			        	    'color': 'white',
-			        	    'text-outline-width': 1,
-			        	    'text-outline-color': '#dd4de2',
-			        	    'font-size' : 7,
-			        	    'shape' : 'data(shape)',
-			        	    'width' : 'data(size)',
-			        	    'height' : 'data(size)'
-			            }
-			            },
-			            {
-							selector: ':parent',
+		        		selector: 'node:childless',
+		        		elements: data.nodes,
+		        		style: {
+		        			'content': 'data(name)',
+		        	        'text-valign': 'center',
+		        	        'background-color': 'data(color)',
+		        	        'color' : 'black',
+		        	        'text-outline-width': 1,
+		        	        'text-outline-color': 'data(color)',
+		        	        'font-size' : 7,
+		        	        'shape' : 'data(shape)',
+			                'border-width': 1,
+			                'border-color': 'black',
+		        	        'width' : 'data(width)',
+		        	        'height' :'data(height)'
+		                }
+		            	},
+		            	{
+							selector: 'node:parent',
 			        		elements: data.nodes,
-			                css: {
-			                	'text-valign': 'top',
-			                    'text-halign': 'center',
-			                }
-			            },
+			        		style: {
+			        			'content' : function (ele) {
+						    	 	if(ele.data().name === undefined){
+						    	 		return '';
+						    	 	}
+				                    return ele.data().name;
+				             	},
+			        	        'color' : 'black',
+			        	        'background-color': function (ele) {
+						    	 	if(ele.data().color === undefined){
+						    	 		return 'white';
+						    	 	}
+				                    return ele.data().color;
+				             	},
+				             	'shape' : 'barrel',
+				                'border-width': 2,
+				                'border-color': 'black',
+		            	    	'text-valign': 'top',
+			        	        'font-size' : 14,
+		            	        'text-halign': 'center'
+		            	    }
+		            	},
 			            {
-			              selector: 'edge',
-			              elements: data.edges,
+				            selector: 'edge',
+				            elements: data.edges,
+					        style: {
+						    'curve-style': 'bezier',
+						    'line-color': 'black',
+						    'line-style': function(ele) {
+						   	 if(ele.data().line === undefined || ele.data().line === ''){
+						   		 return 'solid';
+						   	 }
+						   	 return ele.data().line;
+						    },
+						    'target-arrow-shape': function (ele) {
+						   	 	if(ele.data().shape === undefined){
+						   	 		return 'vee';
+						   	 	}
+					                  return ele.data().shape;
+					           },
+						    'target-arrow-color': 'black',
+						    'width': 1
+							}
+				        },
+			            {
+			              selector: 'node:selected',
 			              style: {
-			                'curve-style': 'bezier',
-			                'target-arrow-shape': 'triangle'
+				                'border-width': 2,
+				                'border-color': 'red'
 			              }
 			            },
 			            {
-			              selector: '.eh-handle',
+			              selector: 'edge:selected',
 			              style: {
-			                'background-color': 'red',
-			                'width': 12,
-			                'height': 12,
-			                'shape': 'ellipse',
-			                'overlay-opacity': 0,
-			                'border-width': 12, // makes the handle easier to hit
-			                'border-opacity': 0
-			              }
-			            },
-			
-			            {
-			              selector: '.eh-hover',
-			              style: {
-			                'background-color': 'red'
-			              }
-			            },
-			
-			            {
-			              selector: '.eh-source',
-			              style: {
-			                'border-width': 2,
-			                'border-color': 'red'
-			              }
-			            },
-			
-			            {
-			              selector: '.eh-target',
-			              style: {
-			                'border-width': 2,
-			                'border-color': 'red'
-			              }
-			            },
-			
-			            {
-			              selector: '.eh-preview, .eh-ghost-edge',
-			              style: {
-			                'background-color': 'red',
-			                'line-color': 'red',
-			                'target-arrow-color': 'red',
-			                'source-arrow-color': 'red'
-			              }
-			            },
-			
-			            {
-			              selector: '.eh-ghost-edge.eh-preview-active',
-			              style: {
-			                'opacity': 0
+			            	  'target-arrow-color': 'red',
+				              'line-color': 'red'
 			              }
 			            }
-			          ],
-			          layout: {
-			        	  name:'preset'
-			          }
-			
+					],
+					layout: {
+			        	name:'preset'
+					}
 			});
 			
 		}).then(() => {
@@ -244,31 +219,11 @@ h1 {
 			eh = cy.edgehandles({
 				snap: false
 			});
-			cy.userZoomingEnabled(false);
-/* 			window.layoutArr = [
-				{
-				    name: 'dagre'
-				},
-				{
-				    name: 'avsdf',
-					animate: "during",
-					animationDuration: 1000,
-					animationEasing: 'ease-in-out',
-					nodeSeparation: 120
-				},
-				{
-				    name: 'klay'
-				},
-				{
-				    name: 'euler',
-					randomize: true,
-					animate: false
-			}];
-			window.cyLayout = cy.layout(layoutArr[data.layout]);
-			cyLayout.run(); */
-			document.querySelector('#detail').classList.remove('show', 'active');
+			cy.minZoom(1);
+			cy.maxZoom(3);
 		})
 	});
+	console.warn = () => {};
 	
 	let resizeTimer;
 
@@ -310,13 +265,11 @@ h1 {
 			return false;
 		}
 		var ref = ele.popperRef();
-		// Since tippy constructor requires DOM element/elements, create a placeholder
 		var domEle = document.querySelector('#cy');
 
 		var tip = tippy( domEle, {
 			getReferenceClientRect: ref.getBoundingClientRect,
-			trigger: 'manual', // mandatory
-			// dom element inside the tippy:
+			trigger: 'manual',
 			content: function() {
 				var div = document.createElement('div');
 				div.className = 'tippy';
@@ -333,12 +286,6 @@ h1 {
 		});
 		return tip;
 	};
-
-    let tabEl = document.querySelector('button[data-bs-target="#detail"]')
-    tabEl.addEventListener('shown.bs.tab', function (e) {
-    })
-    tabEl.addEventListener('hidden.bs.tab', function (e) {
-    })
 </script>
 </body>
 </html>

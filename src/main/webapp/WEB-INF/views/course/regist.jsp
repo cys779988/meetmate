@@ -8,8 +8,8 @@
 <style>
 #cy {
 	position: absolute;
-	width: 1600px;
-	height: 900px;
+	width: 1630px;
+	height: 1300px;
 	display: block;
 }
 
@@ -22,7 +22,17 @@ h1 {
 .tippy-popper {
 	transition: none !important;
 }
+
+.sticky {
+	width: 85.65%;
+	position: fixed;
+	top: 56px;
+	z-index: 9999999;
+}
+
 </style>
+<link rel="stylesheet" href="<c:url value='/css/toolbar.css'/>"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.css" integrity="sha512-HcfKB3Y0Dvf+k1XOwAD6d0LXRFpCnwsapllBQIvvLtO2KMTa0nI5MtuTv3DuawpsiA0ztTeu690DnMux/SuXJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="sb-nav-fixed">
 	<c:import url="../common/header.jsp"></c:import>
@@ -31,223 +41,166 @@ h1 {
 		<div id="layoutSidenav_content">
 			<main>
 				<div class="container-fluid px-4">
-				<h2>Course Regist</h2>
-					<div class="mb-3 mt-3">
-						<ul class="nav nav-tabs" id="myTab">
-						  <li class="nav-item">
-						    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#basic">기본정보</button>
-						  </li>
-						  <li class="nav-item">
-						    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detail">상세정보</button>
-						  </li>
-						</ul>
-					</div>
-					<div class="tab-content">
-						 <div class="tab-pane fade show active" id="basic">
-							<form name="form" id="form" role="form" method="post">
-								<div class="mb-3">
-									<input type="text" class="form-control" name="title" id="title" placeholder="제목">
-								    <div>
-								    	<p id="titleError"></p>
-								    </div>
-								</div>
-								<div class="mb-3">
-									<label for="category" class="form-label">분류</label>
-									<select class="form-control" name="category" id="category">
-										<option value="1">스터디</option>
-										<option value="2">모임</option>
-									</select>
-									<br>
-								    <div>
-								    	<p id="typeError"></p>
-								    </div>
-								</div>
-								<div class="row g-3">
-									<div class="col-auto">
-										<input type="number" class="form-control" name="divclsNo" id="divclsNo" placeholder="분반">
-									</div>
-									<div class="col-auto">
-										<input type="text" class="form-control" name="maxNum" id="maxNum" placeholder="최대인원">
-									</div>
-								    <div>
-								    	<p id="maxNumError"></p>
-								    </div>
-								</div>
-								<div class="mb-3">
-									<textarea class="form-control" rows="5" name="content" id="content" placeholder="내용"></textarea>
-									<div>
-								    	<p id="contentError"></p>
-								    </div>
-								</div>
-							</form>
-						</div>
-						<div class="tab-pane fade show active" id="detail">
-							<div style="height: 900px;">
-						    	<div class="border border-dark" id="cy"></div>
+					<h2>Course Regist</h2>
+						<form name="form" id="form" role="form" method="post">
+							<div class="mb-3">
+								<input type="text" class="form-control" name="title" id="title" placeholder="제목">
+							    <div>
+							    	<p id="titleError"></p>
+							    </div>
 							</div>
-						    <div>
-								<div class="row g-3 mt-3">
-									<div class="col-auto">
-										<input type="text" class="form-control" id="addName1" placeholder="Node Name" maxlength="10">
-									</div>
-									<div class="col-auto">
-										<input type="text" class="form-control" id="addContent1" placeholder="Node Content" maxlength="20">
-									</div>
-									<div class="col-auto">
-										<input type="number" class="form-control" id="addSize1" placeholder="Node Size" maxlength="2">
-									</div>
-									<div class="col-auto">
-								        <select class="form-select" id="addShape1">
-								        	<option value="ellipse" selected="selected">원</option>
-								        	<option value="triangle">삼각형</option>
-								        	<option value="rectangle">사각형</option>
-								        	<option value="diamond">마름모</option>
-								        	<option value="star">별</option>
-								        </select>
-									</div>
-								    <div class="col-auto">
-								      <button class="btn btn-outline-dark" id="sipNode-add-btn">노드추가</button>
-								      <button class="btn btn-outline-dark" id="drawOn-btn">그리기모드 on</button>
-								      <button class="btn btn-outline-dark" id="drawOff-btn">그리기모드 off</button>
-								    </div>
-									<div class="col-auto">
-	                                   	<select class="form-select" id="selectLayout">
-	                                   		<option value="0" selected="selected">layout1</option>
-	                                   		<option value="1">layout2</option>
-	                                   		<option value="2">layout3</option>
-	                                   		<option value="3">layout4</option>
-	                                   	</select>
-                                   	</div>
-									<div class="col-auto">
-								        <input id="remove-1ch-parents" type="checkbox" value="false" />
-								        <label for="remove-1ch-parents">자식노드 1개인 부모노드 제거</label>
-								    </div>
+							<div class="mb-3">
+								<label for="category" class="form-label">분류</label>
+								<select class="form-control" name="category" id="category">
+									<option value="1">스터디</option>
+									<option value="2">모임</option>
+								</select>
+								<br>
+							    <div>
+							    	<p id="typeError"></p>
+							    </div>
+							</div>
+							<div class="row g-3">
+								<div class="col-auto">
+									<input type="number" class="form-control" name="divclsNo" id="divclsNo" placeholder="분반">
 								</div>
-						    </div>
-						    <div id="myModal" class="modal" tabindex="-1">
-						    	<div class="modal-dialog">
-								    <div class="modal-content">
-								      <div class="modal-header">
-								        <h5 class="modal-title">MindMap</h5>
-								        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								      </div>
-								      <div class="modal-body">
-								      	<div class="mb-3 mt-3">
-											<ul class="nav nav-tabs">
-											  <li class="nav-item">
-											    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#modifyTab">수정</button>
-											  </li>
-											  <li class="nav-item">
-											    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#registTab">등록</button>
-											  </li>
-											</ul>
-										</div>
-										<div class="tab-content">
-											<div class="tab-pane fade show active" id="modifyTab">
-												<div class="clearfix mb10">
-						                            <button type="button" class="btn btn-secondary" id="modifyNode-btn">저장</button>
-	       											<button type="button" class="btn btn-primary" id="deleteNode-btn">삭제</button>
-						                        </div>
-						                        <form id="modifyForm">
-						                        	<input type="hidden" id="id">
-							                        <table class="vertical mb16 tal">
-							                            <colgroup>
-							                                <col style="width:30%">
-							                                <col style="width:70%">
-							                            </colgroup>
-							                            <tbody>
-							                                <tr>
-							                                    <th>name</th>
-							                                    <td colspan="3">
-							                                        <input type="text" class="form-control" id="nodeId" maxlength="10">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>content</th>
-							                                    <td colspan="3">
-							                                        <input type="text" class="form-control" id="nodeContent" maxlength="20">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>size</th>
-							                                    <td colspan="3">
-							                                        <input type="number" class="form-control" id="nodeSize" maxlength="2">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>shape</th>
-							                                    <td colspan="3">
-							                                    	<select class="form-select" id="nodeShape">
-							                                    		<option value="ellipse" selected="selected">원</option>
-							                                    		<option value="triangle">삼각형</option>
-							                                    		<option value="rectangle">사각형</option>
-							                                    		<option value="diamond">마름모</option>
-							                                    		<option value="star">별</option>
-							                                    	</select>
-							                                    </td>
-							                                </tr>
-							                            </tbody>
-							                        </table>
-						                        </form>
-											</div>
-											<div class="tab-pane fade" id="registTab">
-												<div class="clearfix mb10">
-						                            <button type="button" class="btn btn-secondary" id="addNode-btn">저장</button>
-						                        </div>
-						                        <form id="addForm">
-							                        <input type="hidden" id="id">
-							                        <table class="vertical mb16 tal">
-							                            <colgroup>
-							                                <col style="width:30%">
-							                                <col style="width:70%">
-							                            </colgroup>
-							                            <tbody>
-							                                <tr>
-							                                    <th>name</th>
-							                                    <td colspan="3">
-							                                        <input type="text" class="form-control" id="addId" maxlength="10">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>content</th>
-							                                    <td colspan="3">
-							                                        <input type="text" class="form-control" id="addContent" maxlength="20">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>size</th>
-							                                    <td colspan="3">
-							                                        <input type="number" class="form-control" id="addSize" maxlength="2">
-							                                    </td>
-							                                </tr>
-							                                <tr>
-							                                    <th>shape</th>
-							                                    <td colspan="3">
-							                                    	<select class="form-select" id="addShape">
-							                                    		<option value="ellipse" selected="selected">원</option>
-							                                    		<option value="triangle">삼각형</option>
-							                                    		<option value="rectangle">사각형</option>
-							                                    		<option value="diamond">마름모</option>
-							                                    		<option value="star">별</option>
-							                                    	</select>
-							                                    </td>
-							                                </tr>
-							                            </tbody>
-							                        </table>
-												</form>
-											</div>
-										</div>
-									</div>
+								<div class="col-auto">
+									<input type="text" class="form-control" name="maxNum" id="maxNum" placeholder="최대인원">
 								</div>
+							    <div>
+							    	<p id="maxNumError"></p>
+							    </div>
+							</div>
+							<div class="mb-3">
+								<textarea class="form-control" rows="5" name="content" id="content" placeholder="내용"></textarea>
+								<div>
+							    	<p id="contentError"></p>
+							    </div>
+							</div>
+						</form>
+						<div id="toolbar" class="mb-2">
+							<div class="toolbar">
+								<div class="tool_wrap mr10">
+						            <div class="toggle-switch">
+						                <input id="drawMode" type="checkbox">
+						                <label for="drawMode">
+						                    <span class="toggle-track"></span>
+						                </label>
+						            </div>
+						            <span>그리기모드</span>
+						        </div>
+							    <div class="tool_wrap">
+							        <ul class="tool_box clearfix">
+							            <li data-layout="0" onclick="changeLayout(this)" class="tool">
+											<img class="rotate_180" src="<c:url value='/images/mindmap/layout_02.png'/>" alt="레이아웃_01">
+							            </li>
+							            <li data-layout="1" onclick="changeLayout(this)" class="tool" >
+											<img src="<c:url value='/images/mindmap/layout_01.png'/>" alt="레이아웃_02">
+							            </li>
+							            <li data-layout="2" onclick="changeLayout(this)" class="tool">
+											<img src="<c:url value='/images/mindmap/layout_03.png'/>" alt="레이아웃_03">
+							            </li>
+							        </ul>
+							        <span>레이아웃</span>
+							    </div>
+							    <div class="tool_wrap">
+							        <div class="tool_btn">
+							             <a href="#" id="sipNode-add-btn">
+							                 <img src="<c:url value='/images/mindmap/tool_add.png'/>" alt="하위노드추가">
+							             </a>
+							        </div>
+							        <span>하위노드 추가</span>
+							    </div>
+							    <div class="tool_wrap">
+							        <div class="tool_btn">
+							            <a href="#" id="delete-btn">
+							                <img src="<c:url value='/images/mindmap/tool_remove.png'/>" alt="삭제">
+							            </a>
+							        </div>
+							        <span>삭제</span>
+							    </div>
+							    <div class="tool_wrap">
+							        <div class="tool_btn">
+							            <a href="#" id="form-reset-btn">
+							                <img src="<c:url value='/images/mindmap/tool_reset.png'/>" alt="초기화">
+							            </a>
+							        </div>
+							        <span>선택 초기화</span>
+							    </div>
+
+							    <div class="tool_wrap mr10">
+							        <ul class="tool_box clearfix">
+							            <li onclick="updateNode(this)" data-id="shape" data-shape="ellipse" class="tool">
+											<img src="<c:url value='/images/mindmap/shape_01.png'/>" alt="원">
+							            </li>
+							            <li onclick="updateNode(this)" data-id="shape" data-shape="round-rectangle" class="tool">
+							            	<img src="<c:url value='/images/mindmap/shape_02.png'/>" alt="사각형">
+							            </li>
+							            <li onclick="updateNode(this)" data-id="shape" data-shape="round-diamond" class="tool">
+							            	<img src="<c:url value='/images/mindmap/shape_03.png'/>" alt="마름모">
+							            </li>
+							            <li onclick="updateNode(this)" data-id="shape" data-shape="round-hexagon" class="tool">
+							            	<img src="<c:url value='/images/mindmap/shape_04.png'/>" alt="육각형">
+							            </li>
+							        </ul>
+							        <span>도형</span>
+							    </div>
+								<form id="mindmap" name="mindmap">
+							        <div class="tool_wrap">
+							            <input type="color" class="color_picker" id="nodeColor" onchange="updateNode(this)" data-id="color" value="#FFFFFF">
+							            <span>색상</span>
+							        </div>
+							        <span class="line">구분선</span>
+							        <span class="tool_shapes disabled">
+								        <div class="tool_wrap">
+											<input type="text"  id="addName" onblur="updateNode(this)" onkeyup="enterKey(this)" data-id="name" maxlength="10">
+								            <span>Node Name</span>
+								        </div>
+								        <div class="tool_wrap">
+								            <input type="text" id="addContent" onblur="updateNode(this)" onkeyup="enterKey(this)" data-id="content" maxlength="20">
+								        	<span>Node Content</span>
+								        </div>
+								        <div class="tool_wrap">
+								        	<input type="number" id="addWidth" class="w60" onblur="updateNode(this)" oninput="maxLengthCheck(this)" onkeyup="enterKey(this)" data-id="width" maxlength="3">
+								        	<span>Node Width</span>
+								        </div>
+								        <div class="tool_wrap">
+								        	<input type="number" id="addHeight" class="w60" onblur="updateNode(this)" oninput="maxLengthCheck(this)" onkeyup="enterKey(this)" data-id="height" maxlength="3">
+								        	<span>Node Height</span>
+								        </div>
+									</span>
+								</form>
+							    <span class="line">구분선</span>
+							    <span class="tool_arrow disabled">
+							        <div class="tool_wrap mr10">
+							            <ul class="tool_box clearfix">
+							                <li onclick="updateEdge(this)" data-shape="vee" class="tool">
+												<img src="<c:url value='/images/mindmap/arrow_01.png'/>" alt="vee">
+							                </li>
+							                <li onclick="updateEdge(this)" data-shape="none" class="tool">
+												<img src="<c:url value='/images/mindmap/arrow_02.png'/>" alt="none">
+							                </li>
+							                <li onclick="updateEdge(this)" data-shape="triangle" class="tool">
+												<img src="<c:url value='/images/mindmap/arrow_03.png'/>" alt="triangle">
+							                </li>
+							                <li onclick="updateEdge(this)" data-shape="dot" class="tool">
+												<img src="<c:url value='/images/mindmap/arrow_04.png'/>" alt="dot">
+							                </li>
+							            </ul>
+							            <span>화살표</span>
+							        </div>
+							    </span>
 							</div>
 						</div>
+						<p class="tbox">※ Shift + 드래그 : 여러 노드 선택</p>
+						<div style="height: 1300px;" class="content">
+							<div class="border border-dark" id="cy"></div>
+						</div>
+						<div class="mb-3 mt-3">
+							<button class="btn btn-primary mb-3" id="add-btn">등록</button>
+							<button class="btn btn-primary mb-3" id="list-btn">목록</button>
+						</div>
 					</div>
-					<div class="mb-3 mt-3">
-						<button class="btn btn-primary mb-3" id="add-btn">등록</button>
-						<button class="btn btn-primary mb-3" id="list-btn">목록</button>
-					</div>
-				</div>
-				</div>
 			</main>
 			<c:import url="../common/footer.jsp"></c:import>
 		</div>
@@ -264,76 +217,123 @@ h1 {
 <script src="https://unpkg.com/dagre@0.7.4/dist/dagre.js"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-popper.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-edgehandles.js'/>"></script>
-<script src="<c:url value='/js/cytoscape/cytoscape-euler.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-klay.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-avsdf.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-dagre.js'/>"></script>
 <script src="<c:url value='/js/cytoscape/cytoscape-compound.js'/>"></script>
-<%-- <script src="<c:url value='/js/cytoscape/cytoscape-tippy.js'/>"></script> --%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/js/bootstrap-colorpicker.js" integrity="sha512-YFnmLQFOKs4p/gDLhgmMfqdYO9rzXjgeYhjZjomhAXHrJ23AI59keb31/krV4AISRQHGwJhAKfSzzcYF64BxIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
-	const myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-	  keyboard: false
-	})
-	
 	document.addEventListener('DOMContentLoaded', function(){
 		let data = {
 		 	nodes: [],
 		  	edges: []
 		};
-		window.cy_for_rank, window.pageRank, window.cy, window.eh, window.tippyEl = [];
+		window.cy_for_rank, window.pageRank, window.cy, window.eh, window.selectLayout = 0, window.tippyEl = [];
 		
 		data.nodes.push({
 			"data" : {
 				"id" : "Main",
 				"name" : "Main",
 				"content" : "Main",
-				"shape" : "star",
-				"size" : 30,
-				"font" : 7
+				"shape" : "round-hexagon",
+				"width" : 80,
+				"height" : 40,
+				"font" : 7,
+				"color" : "#D0C1B2"
 			}
 		});
 		
 		cy = cytoscape({
-	          container: document.getElementById('cy'),
+				container: document.getElementById('cy'),
 				elements : data,
 				style: [
 	        		{
-	        		selector: ':childless',
+	        		selector: 'node:childless',
 	        		elements: data.nodes,
 	        		style: {
 	        			'content': 'data(name)',
 	        	        'text-valign': 'center',
-	        	        'color': 'white',
+	        	        'background-color': 'data(color)',
+	        	        'color' : 'black',
 	        	        'text-outline-width': 1,
-	        	        'text-outline-color': '#dd4de2',
+	        	        'text-outline-color': 'data(color)',
 	        	        'font-size' : 7,
 	        	        'shape' : 'data(shape)',
-	        	        'width' : 'data(size)',
-	        	        'height' : 'data(size)'
+		                'border-width': 1,
+		                'border-color': 'black',
+	        	        'width' : 'data(width)',
+	        	        'height' :'data(height)'
 	                }
 	            	},
 	            	{
-						selector: ':parent',
+						selector: 'node:parent',
 		        		elements: data.nodes,
-	            	    css: {
+		        		style: {
+		        			'content' : function (ele) {
+					    	 	if(ele.data().name === undefined){
+					    	 		return '';
+					    	 	}
+			                    return ele.data().name;
+			             	},
+		        	        'color' : 'black',
+		        	        'background-color': function (ele) {
+					    	 	if(ele.data().color === undefined){
+					    	 		return 'white';
+					    	 	}
+			                    return ele.data().color;
+			             	},
+			             	'shape' : 'barrel',
+			                'border-width': 2,
+			                'border-color': 'black',
 	            	    	'text-valign': 'top',
-	            	        'text-halign': 'center',
+		        	        'font-size' : 14,
+	            	        'text-halign': 'center'
 	            	    }
 	            	},
 		            {
-		              selector: 'edge',
-		              elements: data.edges,
+			            selector: 'edge',
+			            elements: data.edges,
+				        style: {
+					    'curve-style': 'bezier',
+					    'line-color': 'black',
+					    'line-style': function(ele) {
+					   	 if(ele.data().line === undefined || ele.data().line === ''){
+					   		 return 'solid';
+					   	 }
+					   	 return ele.data().line;
+					    },
+					    'target-arrow-shape': function (ele) {
+					   	 	if(ele.data().shape === undefined){
+					   	 		return 'vee';
+					   	 	}
+				                  return ele.data().shape;
+				           },
+					    'target-arrow-color': 'black',
+					    'width': 1
+						}
+			        },
+		            {
+		              selector: 'node:selected',
 		              style: {
-		                'curve-style': 'bezier',
-		                'target-arrow-shape': 'triangle'
+			                'border-width': 2,
+			                'border-color': 'red'
+		              }
+		            },
+		            {
+		              selector: 'edge:selected',
+		              style: {
+		            	  'target-arrow-color': 'red',
+			              'line-color': 'red'
 		              }
 		            },
 		            {
 		              selector: '.eh-handle',
 		              style: {
 		                'background-color': 'red',
-		                'width': 12,
-		                'height': 12,
+		                'width': 10,
+		                'height': 10,
 		                'shape': 'ellipse',
 		                'overlay-opacity': 0,
 		                'border-width': 12, // makes the handle easier to hit
@@ -401,7 +401,7 @@ h1 {
 		            }
 		          ]
 		});
-		document.querySelector('#detail').classList.remove('show', 'active');
+		/* document.querySelector('#detail').classList.remove('show', 'active'); */
 		
 		cy.nodes().forEach(node => {
 		    	makeTippy(node, node.data().content);
@@ -409,61 +409,108 @@ h1 {
 		eh = cy.edgehandles({
 			snap: false
 		});
-		cy.userZoomingEnabled(false);
+		
+		cy.minZoom(1);
+		cy.maxZoom(3);
 		window.layoutArr = [
-		{
-		    name: 'dagre'
-		},
-		{
-		    name: 'avsdf',
-			animate: "during",
-			animationDuration: 1000,
-			animationEasing: 'ease-in-out',
-			nodeSeparation: 120
-		},
-		{
-		    name: 'klay'
-		},
-		{
-		    name: 'euler',
-			randomize: true,
-			animate: false
-		},
-		/* {
-		    name: 'preset',
-		    padding: 5
-		} */
+			{
+			    name: 'klay',
+				animate: true,
+				animationDuration: 500,
+			},
+			{
+			    name: 'dagre',
+				animate: true,
+				animationDuration: 500
+			},
+			{
+				  name: 'concentric',
+
+				  fit: true,
+				  padding: 30,
+				  startAngle: 3 / 2 * Math.PI,
+				  sweep: undefined,
+				  clockwise: true,
+				  equidistant: false,
+				  minNodeSpacing: 10,
+				  boundingBox: undefined,
+				  avoidOverlap: true,
+				  nodeDimensionsIncludeLabels: false,
+				  height: undefined,
+				  width: undefined,
+				  spacingFactor: undefined,
+				  concentric: function( node ){
+				  return node.degree();
+				  },
+				  levelWidth: function( nodes ){
+				  return nodes.maxDegree() / 4;
+				  },
+				  animate: true,
+				  animationDuration: 500,
+				  animationEasing: undefined,
+				  animateFilter: function ( node, i ){ return true; },
+				  ready: undefined,
+				  stop: undefined,
+				  transform: function (node, position ){ return position; }
+			}
 		];
 		window.cyLayout = function cyLayout(){
-			let selectLayout = document.getElementById('selectLayout').value;
-			
 			let layout = cy.layout(layoutArr[selectLayout]);
 			layout.run();
 		};
+		window.selectLayout = 0;
+		cyLayout();
 		
 		cy.on('ehcomplete', (event, sourceNode, targetNode, addedEdge) => {
 			let { position } = event;
 		});
+
+		cy.on('select', 'node:childless', e => {
+			let node = e.target.data();
 			
-		cy.on('tap', 'node', e => {
-			var node = e.target;
-			document.getElementById('id').value = node.id();
-			myModal.show();
-			document.getElementById('nodeId').value = e.target._private.data.name;
-			document.getElementById('nodeContent').value = e.target._private.data.content;
-			document.getElementById('nodeShape').value = e.target._private.data.shape;
-			document.getElementById('nodeSize').value = e.target._private.data.size;
+			showTool('.tool_shapes');
+			
+			document.mindmap.reset();
+			if(cy.nodes(":selected").length === 1){
+				document.getElementById('addName').value = node.name;
+				document.getElementById('addContent').value = node.content;
+				document.getElementById('addWidth').value = node.width;
+				document.getElementById('addHeight').value = node.height;
+				document.getElementById('nodeColor').value = node.color;
+			}
+		});
+
+		cy.on('select', 'node:parent', e => {
+			let node = e.target.data();
+			
+			showTool('.tool_shapes');
+			document.mindmap.reset();
+			document.getElementById('addName').value = node.name===undefined?'':node.name;
+			document.getElementById('addContent').disabled = "disabled";
+			document.getElementById('addWidth').disabled = "disabled";
+			document.getElementById('addHeight').disabled = "disabled";
+		});
+
+		cy.on('unselect', 'node', e => {
+			if(cy.nodes(":selected").length === 0) {
+				hideTool('.tool_shapes');
+				document.mindmap.reset();
+			}
 		});
 		
-		cy.on('tap', 'edge', e => {
-			let check = confirm("Edge를 삭제하시겠습니까?");
-			if(check){
-				cy.remove(e.target);
+		cy.on('select', 'edge', e => {
+			showTool('.tool_arrow');
+		});
+		
+		cy.on('unselect', 'edge', e => {
+			if(cy.edges(":selected").length === 0) {
+				let node = e.target.data();
+				hideTool('.tool_arrow');
+				document.mindmap.reset();
 			}
 		});
 		
 		var cdnd = cy.compoundDragAndDrop();
-        var removeEmptyParents = false;
 
         var isParentOfOneChild = function(node){
           return node.isParent() && node.children().length === 1;
@@ -478,29 +525,58 @@ h1 {
           cy.nodes().filter(isParentOfOneChild).forEach(removeParent);
         };
 
-        // custom handler to remove parents with only 1 child on drop
         cy.on('cdndout', function(event, dropTarget){
-          if( removeEmptyParents && isParentOfOneChild(dropTarget) ){
+          if(isParentOfOneChild(dropTarget) ){
             removeParent(dropTarget);
           }
         });
 
-        // custom handler to remove parents with only 1 child (on remove of drop target or drop sibling)
         cy.on('remove', function(event){
-          if( removeEmptyParents ){
             removeParentsOfOneChild();
-          }
         });
-        document.getElementById('remove-1ch-parents').addEventListener('click', function(){
-            removeEmptyParents = !removeEmptyParents;
-
-            if( removeEmptyParents ){
-              removeParentsOfOneChild();
-            }
+        
+        $(function() {
+            $('#color-container').colorpicker({
+              //popover: false,
+              inline: true,
+              format: "hex",
+              container: '#color-container'
+              
+            });
 		});
 	});
 	
+	console.warn = () => {};
+	
+/* 	let tabEl = document.querySelector('button[data-bs-target="#detail"]');
+	tabEl.addEventListener('shown.bs.tab', function (e) {
+		e.preventDefault();
+	})
+	tabEl.addEventListener('hidden.bs.tab', function (e) {
+		e.preventDefault();
+	}) */
 
+	$('.tool').click(function(){
+		$(this).siblings('.tool').removeClass('active');
+		$(this).addClass('active');
+	});
+	
+	//툴바 비활성화 설정
+	$('.tool_shapes, .tool_arrow').find('input, select').attr('disabled',true);
+	$('.tool_shapes, .tool_arrow').find('li').addClass('disabled');
+	
+	function hideTool(className) {
+	    $(className).find('input, select').attr('disabled',true);
+	    $(className).find('li').addClass('disabled').removeClass('active');
+	    $(className).addClass('disabled');
+	}
+	
+	function showTool(className){
+	    $(className).removeClass('disabled');
+	    $(className).find('li').removeClass('disabled');
+	    $(className).find('input, select').attr('disabled',false);
+	}
+	
 	let resizeTimer;
 
 	window.addEventListener('resize', function () {
@@ -510,12 +586,25 @@ h1 {
 	    },200);
 	});
 	
+	window.onscroll = function() {myFunction()};
+
+	var navbar = document.getElementById("toolbar");
+
+	var sticky = navbar.offsetTop;
+
+	function myFunction() {
+	  if (window.pageYOffset >= sticky) {
+	    navbar.classList.add("sticky")
+	  } else {
+	    navbar.classList.remove("sticky");
+	  }
+	}
+	
 	var makeTippy = function(ele, text){
 		if(!text || !text.trim()){
 			return false;
 		}
 		var ref = ele.popperRef();
-		// Since tippy constructor requires DOM element/elements, create a placeholder
 		var domEle = document.querySelector('#cy');
 		var tip = tippy( domEle, {
 			getReferenceClientRect: ref.getBoundingClientRect,
@@ -537,7 +626,169 @@ h1 {
 		tippyEl.push(tip);
 		return tip;
 	};
+    
+	document.querySelector('#sipNode-add-btn').addEventListener('click', e => {
+		e.preventDefault();
+		if(cy.nodes(":selected").length !== 1) {
+			alert('하나의 노드를 선택해주세요.');
+			return false;
+		}
+		var node = cy.add({
+			group: 'nodes',
+			data: {"name" : ''
+				, "content" : ''
+				, "shape" : window.selectedShape===undefined ? 'round-rectangle' : window.selectedShape
+				, "color" : '#FFFFFF'
+				, "width"  : 100
+				, "height" : 40
+			}
+		});
 
+		cy.add({
+			group: 'edges',
+			data: {target: node.id(), source: cy.nodes(":selected")[0].id()}
+		})
+
+      	cyLayout();
+		makeTippy(node, node.data().content);
+	});
+	
+	document.querySelector('#form-reset-btn').addEventListener('click', function(e) {
+		e.preventDefault();
+		document.mindmap.reset();
+		cy.elements(":selected").unselect();
+	});
+
+	document.querySelector('#drawMode').addEventListener('change', function(e) {
+		if(e.target.checked) {
+			eh.enableDrawMode();
+		} else {
+			eh.disableDrawMode();
+		}
+	});
+	
+	document.querySelector('#delete-btn').addEventListener('click', function(e) {
+		e.preventDefault();
+		cy.batch(function(){
+			cy.nodes(':selected').forEach(node => {
+				if(node.id() === 'Main'){
+					alert('루트노드는 삭제할 수 없습니다.');
+					return;
+				}
+				cy.remove(node);
+				let tippy = tippyEl.find(data => {if(data.id === node.id()) return true});
+				if(tippy){
+					_.remove(tippyEl, data=> {if(data==tippy) return true; });
+					tippy.destroy();
+				}
+			})
+			
+			cy.edges(':selected').forEach(edge => {
+				cy.remove(edge);
+			})
+		});
+	});
+
+    function changeLayout(ele) {
+    	window.selectLayout = ele.dataset.layout;
+    	cyLayout();
+    }
+    
+	let updateNode = function(e) {
+		
+		if(e.dataset.id === 'shape'){
+			window.selectedShape = e.dataset.shape;
+			updateShape(e.dataset.id, e.dataset.shape);
+			return;
+		}
+		
+		if(cy.nodes(':selected').length === 0) {
+			return false;
+		}
+		
+		cy.nodes(':selected').forEach(node => {
+			node.data(e.dataset.id, e.value);
+		})
+		
+		if(e.dataset.id === 'content') {
+			updateContent();
+		}
+	}
+	
+	let updateShape = function(id, shape) {
+		if(cy.nodes(':selected').length > 0) {
+			cy.batch(function(){
+				cy.nodes(':selected').forEach(node => {
+					if(node.id() === 'Main'){
+						alert('메인 노드는 수정할 수 없습니다.');
+						return;
+					} else{
+						node.data(id, shape);
+					}
+				});
+			});
+		} else {
+	    	let node = cy.add({
+		    	group: 'nodes',
+		    	data: {"name" : ''
+		    		, "content" : ''
+		    		, "shape" : shape
+		    		, "color" : '#FFFFFF'
+					, "width" : 100
+					, "height" : 40
+		    	}
+		    });
+	    	cyLayout();
+		    return;
+		}
+	}
+	
+	let updateContent = function() {
+		cy.nodes(':selected').forEach(node => {
+			let content = node.data().content;
+	    	let target = tippyEl.find(data => {
+	    		if(data.id === node.id())
+	    		return true;
+	    	});
+	    	
+			if(target) {
+				if(content === undefined || content === '') {
+					_.remove(tippyEl, data=> {if(data==target) return true; });
+					target.destroy();
+					return;
+				}
+				target.popper._tippy.setContent(content);
+			} else {
+				makeTippy(node, content);
+			}
+		});
+	}
+	
+	let updateEdge = function(e) {
+		cy.batch(function(){
+			cy.edges(':selected').forEach(edge => {
+				 if(e.dataset.shape === 'dot') {
+					edge.data('line', 'dotted');
+					edge.data('shape', 'vee');
+				} else {
+					edge.data('line', '');
+					edge.data('shape', e.dataset.shape);
+				}
+			});
+		});
+	}
+
+    function maxLengthCheck(object){
+        if (object.value.length > object.maxLength){
+          object.value = object.value.slice(0, object.maxLength);
+        }    
+	}
+	
+	function enterKey(ele) {
+		if (window.event.keyCode == 13) {
+			updateNode(ele);
+	    }
+	}
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
 		location.href = "<c:url value='/course/'/>";
@@ -557,7 +808,6 @@ h1 {
 	    	let data = { "data" : e._private.data}
 		  	param.edge.push(data);
 	    })
-	    param.layout = document.getElementById('selectLayout').value*1;
 		$.ajax({
 			url : "<c:url value='/api/course/'/>",
 			method : "post",
@@ -573,93 +823,10 @@ h1 {
 				messages.forEach(error => {
 					$('#'+Object.getOwnPropertyNames(error)+'Error').append(Object.values(error));
 				});
-				let firstTabEl = document.querySelector('#myTab button[data-bs-target="#basic"]')
-			    let firstTab = new bootstrap.Tab(firstTabEl);
-			    
-			    firstTab.show();
+				$('#'+Object.getOwnPropertyNames(messages[0])).focus();
 			}
 		});
 	})
-	
-	document.getElementById('modifyNode-btn').addEventListener('click', e => {
-		let id = document.getElementById('id').value;
-		let nodeId = document.getElementById('nodeId').value;
-		let content = document.getElementById('nodeContent').value;
-		let shape = document.getElementById('nodeShape').value;
-		let size = document.getElementById('nodeSize').value;
-		let node = cy.$('#' + id);
-		node.data('name', nodeId)
-		.data('content', content)
-		.data('shape', shape)
-		.data('size', size);
-		
-		tippyEl.find(data => {if(data.id === id) return true})
-				.popper._tippy.setContent(content);
-		document.getElementById('modifyForm').reset();
-		myModal.hide();
-	});
-    
-	document.getElementById('addNode-btn').addEventListener('click', e => {
-		var node = cy.add({
-			group: 'nodes',
-			data: {name: document.getElementById('addId').value
-				, content : document.getElementById('addContent').value
-				, shape : document.getElementById('addShape').value
-				, size : document.getElementById('addSize').value ? document.getElementById('addSize').value : 30}
-		});
-		
-		cy.add({
-			group: 'edges',
-			data: {target: node.id(), source: document.getElementById('id').value}
-		})
-
-      	cyLayout();
-		makeTippy(node, node.data().content);
-		document.getElementById('addForm').reset();
-		myModal.hide();
-	});
-
-    document.getElementById('deleteNode-btn').addEventListener('click', e => {
-		let id = document.getElementById('id').value;
-		cy.remove(cy.$('#' + id));
-		tippyEl.find(data => {if(data.id === id) return true}).destroy();
-		myModal.hide();
-	});
-	document.querySelector('#drawOn-btn').addEventListener('click', function() {
-		eh.enableDrawMode();
-	});
-
-	document.querySelector('#drawOff-btn').addEventListener('click', function() {
-		eh.disableDrawMode();
-	});
-
-	document.querySelector('#sipNode-add-btn').addEventListener('click', function() {
-		if(!document.getElementById('addName1').value){
-			alert('Node Name을 입력해주세요.')
-			return false;
-		}
-		let node = cy.add({
-			group: 'nodes',
-			data: {name: document.getElementById('addName1').value
-				, content : document.getElementById('addContent1').value
-				, shape : document.getElementById('addShape1').value
-				, size : document.getElementById('addSize1').value ? document.getElementById('addSize1').value : 30}
-		});
-		cyLayout();
-		makeTippy(node, node.data().content);
-	});
-
-    let tabEl = document.querySelector('button[data-bs-target="#detail"]')
-    tabEl.addEventListener('shown.bs.tab', function (e) {
-    	e.preventDefault();
-    })
-    tabEl.addEventListener('hidden.bs.tab', function (e) {
-    	e.preventDefault();
-    })
-
-    document.querySelector('#selectLayout').addEventListener('change', function() {
-    	cyLayout();
-    })
 </script>
 </body>
 </html>
