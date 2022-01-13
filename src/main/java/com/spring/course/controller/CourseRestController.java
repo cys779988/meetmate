@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.common.model.PageVO;
+import com.spring.common.util.AppUtil;
 import com.spring.common.util.GridUtil;
 import com.spring.course.model.CourseDto;
 import com.spring.course.service.CourseService;
@@ -45,7 +46,7 @@ public class CourseRestController {
 		PageVO pageVO = PageVO.builder().page(page).perPage(perPage).build();
 		
 		List<CourseDto> contentsList =  courseService.getCourses(pageVO, searchParam);
-		Long totalCount = courseService.getCourseCount();
+		Long totalCount = courseService.getCourseCount(searchParam);
 		
 		pagination.put("totalCount", totalCount);
 		GridUtil gridUtil = new GridUtil(contentsList, pagination);
@@ -71,6 +72,7 @@ public class CourseRestController {
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
+		param.setRegistrant(AppUtil.getUser());
 		courseService.addCourse(param);
 		return ResponseEntity.ok(null);
 	}
@@ -88,6 +90,7 @@ public class CourseRestController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
 		param.setId(no);
+		param.setRegistrant(AppUtil.getUser());
 		courseService.updateCourse(param);
 		return ResponseEntity.ok(null);
 	}

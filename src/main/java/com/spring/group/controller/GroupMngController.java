@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.spring.common.util.AppUtil;
 import com.spring.course.service.CourseService;
 import com.spring.group.service.GroupMngService;
 
@@ -23,7 +24,7 @@ public class GroupMngController {
 	
 	@GetMapping("/")
 	public String groupMngView(Model model) {
-		model.addAttribute("course", courseService.getCourseByUser());
+		model.addAttribute("course", courseService.getCourseByUser(AppUtil.getUser()));
 		return "group/list";
 	}
 	

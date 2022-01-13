@@ -21,7 +21,6 @@ import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CategoryRepository;
 import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
-import com.spring.security.model.UserEntity;
 
 import javax.transaction.Transactional;
 
@@ -58,16 +57,19 @@ public class CourseService {
     }
     
     @Transactional
-    public Long getCourseCount() {
-        return courseRepository.count();
+    public Long getCourseCount(Long id) {
+    	if(id == null) {
+    		return courseRepository.count();
+    	}
+        return courseRepository.countByCategoryId(id);
     }
 
 	public List<CategoryEntity> getCategories() {
 		return categoryRepository.findAll();
 	}
 
-	public List<CourseDto> getCourseByUser() {
-		List<CourseEntity> courseEntityList = courseRepository.findByRegistrant_email(AppUtil.getUser());
+	public List<CourseDto> getCourseByUser(String email) {
+		List<CourseEntity> courseEntityList = courseRepository.findByRegistrant_email(email);
 		
 		return courseEntityList.stream().map(courseEntity -> convertEntityToDto(courseEntity)).collect(Collectors.toList());
 	}
@@ -85,27 +87,29 @@ public class CourseService {
 
     
     @Transactional
-    public void addCourse(CourseDto courseDto) {
+    public Long addCourse(CourseDto courseDto) {
     	CourseEntity entity;
+    	Long id = null;
 		try {
 			entity = courseDto.toEntity();
-	    	entity.setRegistrant(UserEntity.builder().email(AppUtil.getUser()).build());
-			courseRepository.save(entity);
+			id = courseRepository.save(entity).getId();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+		return id;
     }
     
     @Transactional
-    public void updateCourse(CourseDto courseDto) {
+    public Long updateCourse(CourseDto courseDto) {
     	CourseEntity entity;
+    	Long id = null;
     	try {
     		entity = courseDto.toEntity();
-	    	entity.setRegistrant(UserEntity.builder().email(AppUtil.getUser()).build());
     		courseRepositorySupport.updateCourse(entity);
     	} catch (JsonProcessingException e) {
     		e.printStackTrace();
     	}
+    	return id;
     }
 
     @Transactional

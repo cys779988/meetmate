@@ -16,7 +16,6 @@ import com.spring.board.repository.BoardRepository;
 import com.spring.board.repository.BoardRepositorySupport;
 import com.spring.board.repository.ReplyRepository;
 import com.spring.common.model.PageVO;
-import com.spring.common.util.AppUtil;
 import com.spring.security.model.UserEntity;
 
 import javax.transaction.Transactional;
@@ -48,7 +47,10 @@ public class BoardService {
     
     @Transactional
     public Long getBoardCount(String keyword) {
-        return boardRepositorySupport.findCountByTitle(keyword);
+    	if(keyword == null) {
+    		return boardRepository.count();
+    	}
+        return boardRepository.countByTitleContaining(keyword);
     }
     
     @Transactional
@@ -76,16 +78,14 @@ public class BoardService {
     @Transactional
     public Long addBoard(BoardDto boardDto) {
     	BoardEntity entity = boardDto.toEntity();
-    	entity.setRegistrant(UserEntity.builder().email(AppUtil.getUser()).build());
         return boardRepository.save(entity).getId();
     }
 
     @Transactional
-	public void addReply(ReplyDto replyDto) {
+	public Long addReply(ReplyDto replyDto) {
     	ReplyEntity entity = replyDto.toEntity();
-    	entity.setRegistrant(UserEntity.builder().email(AppUtil.getUser()).build());
     	entity.setBoard(BoardEntity.builder().id(replyDto.getBoardId()).build());
-        replyRepository.save(entity);
+        return replyRepository.save(entity).getId();
 	}
 	
     @Transactional

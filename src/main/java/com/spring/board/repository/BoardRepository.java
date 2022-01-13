@@ -10,4 +10,6 @@ import com.spring.board.model.BoardEntity;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 	Page<BoardEntity> findByTitleContaining(Pageable pageable, String keyword);
+	
+	Long countByTitleContaining(String keyword);
 }

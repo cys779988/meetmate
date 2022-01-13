@@ -1,20 +1,19 @@
 package com.spring.course;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,85 +22,105 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.board.controller.BoardController;
+import com.spring.board.controller.BoardRestController;
+import com.spring.board.model.BoardDto;
+import com.spring.board.service.BoardService;
+import com.spring.course.controller.CourseController;
 import com.spring.course.controller.CourseRestController;
 import com.spring.course.model.CourseDto;
+import com.spring.course.service.CourseService;
 import com.spring.security.config.SecurityConfig;
 
-
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = CourseRestController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)})
-class CourseRestTest {
+@WebMvcTest(controllers = {CourseRestController.class, CourseController.class}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)})
+@AutoConfigureMockMvc
+@WithMockUser(roles = "GUEST")
+class CourseMvcTest {
 	@Autowired
 	ObjectMapper objectMapper;
 	
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private CourseService courseService;
+	
+	@Test
+	public void courseListTest() throws Exception{
+		mockMvc.perform(get("/course/"))
+		.andExpect(status().isOk())
+		.andExpect(view().name("course/list"))
+		.andDo(print());
+	}
 	
     @Test
-    @WithMockUser(roles = "ADMIN")
     public void getCourses() throws Exception {
-        mockMvc.perform(get("/api/course/get")
-        		.contentType(MediaType.APPLICATION_JSON_VALUE))
-        .andDo(print())
-		.andExpect(status().isOk());
+    	MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+    	param.add("page", "1");
+    	param.add("perPage", "10");
+    	
+        mockMvc.perform(get("/api/course/")
+        			.params(param)
+	        		.contentType(MediaType.APPLICATION_JSON_VALUE)
+	        		.accept(MediaType.APPLICATION_JSON_VALUE))
+		        .andDo(print())
+				.andExpect(status().isOk());
     }
     
 	@Test
-	@WithMockUser(roles = "GUEST")
 	public void addCourse() throws Exception{
-		List<Object> node = new ArrayList<>();
-		List<Object> edge = new ArrayList<>();
-		CourseDto dto = CourseDto.builder()
-				.title("테스트제목")
-				.content("테스트내용")
-				.category(1L)
-				.divclsNo(5)
-				.maxNum(20)
-				.curNum(0)
-				.node(node)
-				.edge(edge)
-				.build();
-
-		mockMvc.perform(post("/api/course/add")
+		CourseDto courseDto = CourseDto.builder()
+						.title("테스트제목")
+						.registrant("admin")
+						.content("테스트내용")
+						.category(1L)
+						.divclsNo(5)
+						.maxNum(20)
+						.curNum(0)
+						.node(null)
+						.edge(null)
+						.build();
+		
+		mockMvc.perform(post("/api/course/").with(csrf())
 					.contentType(MediaType.APPLICATION_JSON_VALUE)
 					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.content(objectMapper.writeValueAsString(dto)))
+					.content(objectMapper.writeValueAsString(courseDto)))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn();
 	}
 	
 	@Test
-	@WithMockUser(roles = "GUEST")
 	public void editCourse() throws Exception{
-		List<Object> node = new ArrayList<>();
-		List<Object> edge = new ArrayList<>();
-		CourseDto dto = CourseDto.builder()
+		CourseDto courseDto = CourseDto.builder()
 				.title("테스트제목")
+				.registrant("admin")
 				.content("테스트내용")
 				.category(1L)
 				.divclsNo(5)
 				.maxNum(20)
 				.curNum(0)
-				.node(node)
-				.edge(edge)
+				.node(null)
+				.edge(null)
 				.build();
 		
-		mockMvc.perform(put("/api/course/4")
+		mockMvc.perform(put("/api/course/1").with(csrf())
 					.contentType(MediaType.APPLICATION_JSON_VALUE)
 					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.content(objectMapper.writeValueAsString(dto)))
+					.content(objectMapper.writeValueAsString(courseDto)))
 				.andDo(print())
 				.andExpect(status().isOk());
 	}
 
 
 	@Test
-	@WithMockUser(roles = "GUEST")
-	public void deleteCourse() throws Exception{
-		mockMvc.perform(delete("/api/course/103")
+	public void deleteBoard() throws Exception{
+		mockMvc.perform(delete("/api/course/103").with(csrf())
 					.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(print())
 				.andExpect(status().isOk());

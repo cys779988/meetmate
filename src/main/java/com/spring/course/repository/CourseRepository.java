@@ -14,4 +14,6 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
 	Page<CourseEntity> findByCategoryId(Pageable pageable, Long id);
 	
 	List<CourseEntity> findByRegistrant_email(String email);
+	
+	Long countByCategoryId(Long id);
 }

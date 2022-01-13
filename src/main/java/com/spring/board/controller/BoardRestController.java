@@ -26,6 +26,7 @@ import com.spring.board.model.BoardDto;
 import com.spring.board.model.ReplyDto;
 import com.spring.board.service.BoardService;
 import com.spring.common.model.PageVO;
+import com.spring.common.util.AppUtil;
 import com.spring.common.util.GridUtil;
 
 import lombok.AllArgsConstructor;
@@ -84,6 +85,7 @@ public class BoardRestController {
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
+		param.setRegistrant(AppUtil.getUser());
 		boardService.addBoard(param);
 		return ResponseEntity.ok(null);
 	}
@@ -100,6 +102,7 @@ public class BoardRestController {
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorList);
 		}
+		param.setRegistrant(AppUtil.getUser());
 		boardService.addReply(param);
 		return ResponseEntity.ok(null);
 	}
