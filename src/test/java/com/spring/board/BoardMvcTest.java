@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,6 +35,7 @@ import com.spring.security.config.SecurityConfig;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {BoardRestController.class, BoardController.class}, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)})
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WithMockUser(roles = "GUEST")
 class BoardMvcTest {
 	@Autowired
@@ -92,6 +93,23 @@ class BoardMvcTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn();
+	}
+	
+	@Test
+	public void expect4xxErrorAddBoard() throws Exception{
+		BoardDto boardDto = BoardDto.builder()
+				.title("추가된 제목")
+				.content("")
+				.registrant("cys779988@naver.com")
+				.build();
+		
+		mockMvc.perform(post("/api/board/").with(csrf())
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(boardDto)))
+		.andDo(print())
+		.andExpect(status().is4xxClientError())
+		.andReturn();
 	}
 	
 	@Test

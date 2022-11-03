@@ -37,6 +37,8 @@ dependencies {
 
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.mockito:mockito-core:3.6.28"
+	testImplementation "org.mockito:mockito-inline:3.4.0"
 	//implementation 'org.springframework.session:spring-session-jdbc'
 	//Socket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'

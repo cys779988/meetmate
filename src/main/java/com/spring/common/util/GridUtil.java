@@ -1,25 +1,20 @@
 package com.spring.common.util;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import com.spring.common.model.GridForm;
+import com.spring.common.model.GridResponse;
 
 public class GridUtil {
-	private Map<String, Object> readData = new HashMap<>();
+	private GridUtil() {}
 	
-	public GridUtil(List<?> param, Map<String, Object> page) {
-		Map<String, Object> data = new HashMap<>();
+	public static GridForm of(int pageNum, long totalCount, List<?> contentList) {
+		GridResponse gridResponse = GridResponse.builder()
+									.page(pageNum)
+									.totalCount(totalCount)
+									.contentList(contentList)
+									.build();
 		
-		data.put("contents", param);
-		data.put("pagination", page);
-
-		readData.put("result", "true");
-		readData.put("data", data);
-		
+		return new GridForm(true, gridResponse);
 	}
-	
-	public Map<String, Object> getData(){
-		return readData;
-	}
-	
 }

@@ -1,13 +1,15 @@
 package com.spring.board;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,12 +24,18 @@ import com.spring.board.model.ReplyEntity;
 import com.spring.board.repository.BoardRepository;
 import com.spring.board.repository.BoardRepositorySupport;
 import com.spring.board.repository.ReplyRepository;
+import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
+import com.spring.security.repository.UserRepository;
 
 @ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @Transactional
 public class BoardDataJpaTest {
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private BoardRepository boardRepository;
@@ -38,6 +46,13 @@ public class BoardDataJpaTest {
 	@Autowired
 	private BoardRepositorySupport boardRepositorySupport;
 
+	private static final String ID = "admin";
+	
+	@BeforeAll
+	public void createUser() {
+		userRepository.save(UserEntity.builder().email(ID).password("admin").name("admin").role(Role.GUEST).build());
+	}
+	
 	@Test
 	@DisplayName("게시글 제목으로 카운트 조회")
 	public void countByTitleBoard() {
@@ -46,10 +61,10 @@ public class BoardDataJpaTest {
 		
 		boardRepository.save(BoardEntity.builder()
 								.title(title)
-								.registrant(UserEntity.builder().email("admin").build())
+								.registrant(userRepository.getOne(ID))
 								.content("테스트내용")
 								.build());
-
+		
 		Long result = boardRepositorySupport.findCountByTitle(title);
 		
 		assertThat(result, is(1L));
@@ -67,7 +82,9 @@ public class BoardDataJpaTest {
 		BoardEntity entity = dto.toEntity();
 		Long id = boardRepository.save(entity).getId();
 		
-		assertThat(boardRepository.findById(id).get().getId(), is(id));
+		Optional<BoardEntity> boardWrapper = boardRepository.findById(id);
+		
+		assertThat(boardWrapper.get(), notNullValue());
 	}
 
 	@Test
@@ -101,7 +118,9 @@ public class BoardDataJpaTest {
 		ReplyEntity entity = dto.toEntity();
 		Long id = replyRepository.save(entity).getId();
 		
-		assertThat(replyRepository.findById(id).get().getId(), is(id));
+		Optional<ReplyEntity> replyWrapper = replyRepository.findById(id);
+		
+		assertThat(replyWrapper.get(), notNullValue());
 	}
 	
 	@Test

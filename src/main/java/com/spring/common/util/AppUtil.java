@@ -8,6 +8,8 @@ import com.spring.security.model.UserEntity;
 
 
 public class AppUtil{
+	private AppUtil() {}
+	
 	public static String getUser() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if(principal instanceof DefaultOAuth2User) {

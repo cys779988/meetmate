@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -13,8 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.common.model.PageVO;
-import com.spring.common.util.AppUtil;
+import com.spring.common.model.GridForm;
+import com.spring.common.util.GridUtil;
 import com.spring.course.model.CategoryEntity;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
@@ -27,6 +26,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,21 +39,22 @@ public class CourseService {
     private CourseRepositorySupport courseRepositorySupport;
     
     @Transactional
-    public List<CourseDto> getCourses(PageVO pageVO, Long id) {
-    	Page<CourseEntity> page;
-    	if(id == null) {
-    		page = courseRepository.findAll(PageRequest.of(pageVO.getPage(), pageVO.getPerPage(), Sort.by(Direction.ASC, "createdDate")));
+    public GridForm getCoursesGridForm(Pageable page, Long id) {
+    	Page<CourseEntity> pageCourses;
+    	
+    	if(Objects.isNull(id)) {
+    		pageCourses = courseRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
     	} else {
-    		page = courseRepository.findByCategoryId(PageRequest.of(pageVO.getPage(), pageVO.getPerPage(), Sort.by(Direction.ASC, "createdDate")), id);
+    		pageCourses = courseRepository.findByCategoryId(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()), id);
     	}
-        List<CourseEntity> courseEntities = page.getContent();
-        List<CourseDto> courseDtoList = new ArrayList<>();
 
-        for ( CourseEntity courseEntity : courseEntities) {
-        	courseDtoList.add(this.convertEntityToDto(courseEntity));
-        }
-
-        return courseDtoList;
+    	List<CourseDto> contentList = new ArrayList<>();
+    	
+    	if(pageCourses.hasContent()) {
+    		contentList = pageCourses.getContent().stream().map(i -> convertEntityToDto(i)).collect(Collectors.toList());
+    	}
+    	
+        return GridUtil.of(page.getPageNumber(), pageCourses.getTotalElements(), contentList);
     }
     
     @Transactional

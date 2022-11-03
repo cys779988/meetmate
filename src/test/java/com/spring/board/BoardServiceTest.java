@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Pageable;
 import com.spring.board.model.BoardDto;
 import com.spring.board.model.BoardEntity;
 import com.spring.board.model.ReplyDto;
@@ -27,7 +28,9 @@ import com.spring.board.repository.BoardRepository;
 import com.spring.board.repository.BoardRepositorySupport;
 import com.spring.board.repository.ReplyRepository;
 import com.spring.board.service.BoardService;
-import com.spring.common.model.PageVO;
+import com.spring.common.model.GridForm;
+import com.spring.common.model.GridResponse;
+import com.spring.common.util.GridUtil;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
 
@@ -45,7 +48,6 @@ class BoardServiceTest {
     
     @Mock
     private ReplyRepository replyRepository;	
-    
     
     private BoardEntity getBoardData() {
     	UserEntity user =  UserEntity.builder()
@@ -105,17 +107,19 @@ class BoardServiceTest {
     }
     
     @Test
-    public void getBoards() {
-    	PageVO pageVO = new PageVO(1, 10);
-    	Page<BoardEntity> page = new PageImpl<BoardEntity>(getBoardListData());
+    public void getBoardsGridForm() {
+    	Pageable page = PageRequest.of(0, 10);
+    	Page<BoardEntity> testData = new PageImpl<BoardEntity>(getBoardListData());
     	
-    	when(boardRepository.findByTitleContaining(PageRequest.of(0, 10, Sort.by(Direction.ASC, "createdDate")), null)).thenReturn(page);
+    	when(boardRepository.findByTitleContaining(page, null)).thenReturn(testData);
     	
-    	List<BoardDto> boardList = boardService.getBoards(pageVO, null);
+    	try(MockedStatic<GridUtil> gridUtil = Mockito.mockStatic(GridUtil.class)) {
+    		when(GridUtil.of(anyInt(), anyLong(), anyList())).thenReturn(new GridForm(true, new GridResponse()));
+    		
+    		GridForm boardsGridForm = boardService.getBoardsGridForm(page, null);
     	
-    	assertThat(boardList.get(0), instanceOf(BoardDto.class));
-    	
-    	verify(boardRepository, times(1)).findByTitleContaining(PageRequest.of(0, 10, Sort.by(Direction.ASC, "createdDate")), null);
+    		assertThat(boardsGridForm.getData(), notNullValue());
+    	}
     }
     
     @Test
@@ -128,44 +132,22 @@ class BoardServiceTest {
 				.password("")
 				.build();
     	
-    	Optional<BoardEntity> board = Optional.of(BoardEntity.builder().id(1L).registrant(user).title("테스트제목1").content("테스트글1").build());
+    	Optional<BoardEntity> entityWrapper = Optional.of(BoardEntity.builder().id(1L).registrant(user).title("테스트제목1").content("테스트글1").build());
     	
-    	when(boardRepository.findById(1L)).thenReturn(board);
+    	when(boardRepository.findById(1L)).thenReturn(entityWrapper);
     	
-    	BoardDto boardDto = boardService.getBoard(1L);
+    	BoardDto board = boardService.getBoard(1L);
     	
-    	assertThat(boardDto, notNullValue());
+    	assertThat(board, notNullValue());
     	
     	verify(boardRepository, times(1)).findById(1L);
-    }
-    
-    @Test
-    public void getBoardCount() {
-    	when(boardRepository.count()).thenReturn(12L);
-    	
-    	Long boardSize = boardService.getBoardCount(null);
-    	
-    	assertThat(boardSize, is(12L));
-    	
-    	verify(boardRepository, times(1)).count();
-    }
-    
-    @Test
-    public void getBoardCountByTitle() {
-    	when(boardRepository.countByTitleContaining(any(String.class))).thenReturn(12L);
-    	
-    	Long boardSize = boardService.getBoardCount("테스트");
-    	
-    	assertThat(boardSize, is(12L));
-    	
-    	verify(boardRepository, times(1)).countByTitleContaining(any(String.class));
     }
     
     @Test
     public void getReplys() {
     	when(replyRepository.findByBoardId(1L)).thenReturn(getReplyData());
     	
-    	List<ReplyDto> replyList = boardService.getReplys(1L);
+    	List<ReplyEntity> replyList = boardService.getReplys(1L);
     	
     	assertThat(replyList.size(), is(5));
     	

@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,20 +18,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Pageable;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.common.model.PageVO;
+import com.spring.common.model.GridForm;
+import com.spring.common.model.GridResponse;
+import com.spring.common.util.GridUtil;
 import com.spring.course.model.CategoryEntity;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
@@ -124,32 +129,38 @@ class CourseServiceTest {
     }
     
     @Test
-    public void getCourses() {
-    	PageVO pageVO = new PageVO(1, 10);
-    	Page<CourseEntity> page = new PageImpl<CourseEntity>(getCourseListData());
+    public void getCoursesGridForm() {
+    	Pageable page = PageRequest.of(0, 10);
+    	Page<CourseEntity> testData = new PageImpl<CourseEntity>(getCourseListData());
     	
-    	when(courseRepository.findAll(any(PageRequest.class))).thenReturn(page);
+    	when(courseRepository.findAll(any(PageRequest.class))).thenReturn(testData);
     	
-    	List<CourseDto> courseList = courseService.getCourses(pageVO, null);
+    	try(MockedStatic<GridUtil> gridUtil = Mockito.mockStatic(GridUtil.class)) {
+    		when(GridUtil.of(anyInt(), anyLong(), anyList())).thenReturn(new GridForm(true, new GridResponse()));
+    		
+    		GridForm coursesGridForm = courseService.getCoursesGridForm(page, null);
     	
-    	assertThat(courseList.get(0), instanceOf(CourseDto.class));
-    	
-    	verify(courseRepository, times(1)).findAll(any(PageRequest.class));
+    		assertThat(coursesGridForm.getData(), notNullValue());
+    	}
     }
     
     @Test
     public void getCoursesByCategoryId() {
-
-    	PageVO pageVO = new PageVO(1, 10);
-    	Page<CourseEntity> page = new PageImpl<CourseEntity>(getCourseListData());
+    	Pageable page = PageRequest.of(0, 10);
+    	Page<CourseEntity> testData = new PageImpl<CourseEntity>(getCourseListData());
     	Long id = 1L;
-    	when(courseRepository.findByCategoryId(any(PageRequest.class), any(Long.class))).thenReturn(page);
+    	when(courseRepository.findByCategoryId(any(PageRequest.class), any(Long.class))).thenReturn(testData);
 
-    	List<CourseDto> courseList = courseService.getCourses(pageVO, id);
+    	try(MockedStatic<GridUtil> gridUtil = Mockito.mockStatic(GridUtil.class)) {
+    		when(GridUtil.of(anyInt(), anyLong(), anyList())).thenReturn(new GridForm(true, new GridResponse()));
+    		
+    		GridForm coursesGridForm = courseService.getCoursesGridForm(page, id);
     	
-    	assertThat(courseList.get(0), notNullValue());
+    		assertThat(coursesGridForm.getData(), notNullValue());
+
+    		verify(courseRepository, times(1)).findByCategoryId(any(PageRequest.class), any(Long.class));
+    	}
     	
-    	verify(courseRepository, times(1)).findByCategoryId(any(PageRequest.class), any(Long.class));
     }
     
     @Test

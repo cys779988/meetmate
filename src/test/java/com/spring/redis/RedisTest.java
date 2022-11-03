@@ -31,14 +31,12 @@ class RedisTest {
 		assertThat(redisTemplate.opsForValue().get(key)).isEqualTo("value");
 		
 		redisTemplate.delete(key);
-		
-		
 	}
 
 	@Test
 	public void redisPubSub_test() {
+		String channel = "foo";
 		String message = "foo/bar";
-		String channel = env.getProperty("spring.redis.channel");
 		redisTemplate.convertAndSend(channel, message);
 	}
 }

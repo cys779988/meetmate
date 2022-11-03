@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.board.controller.BoardController;
-import com.spring.board.controller.BoardRestController;
-import com.spring.board.model.BoardDto;
-import com.spring.board.service.BoardService;
 import com.spring.course.controller.CourseController;
 import com.spring.course.controller.CourseRestController;
 import com.spring.course.model.CourseDto;
@@ -96,6 +91,29 @@ class CourseMvcTest {
 	}
 	
 	@Test
+	public void expect4xxErrorAddCourse() throws Exception{
+		CourseDto courseDto = CourseDto.builder()
+				.title("테스트제목")
+				.registrant("admin")
+				.content("")
+				.category(1L)
+				.divclsNo(5)
+				.maxNum(20)
+				.curNum(0)
+				.node(null)
+				.edge(null)
+				.build();
+		
+		mockMvc.perform(post("/api/course/").with(csrf())
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(courseDto)))
+			.andDo(print())
+			.andExpect(status().is4xxClientError())
+			.andReturn();
+	}
+	
+	@Test
 	public void editCourse() throws Exception{
 		CourseDto courseDto = CourseDto.builder()
 				.title("테스트제목")
@@ -117,7 +135,28 @@ class CourseMvcTest {
 				.andExpect(status().isOk());
 	}
 
-
+	@Test
+	public void expect4xxErrorEditCourse() throws Exception{
+		CourseDto courseDto = CourseDto.builder()
+				.title("테스트제목")
+				.registrant("admin")
+				.content("")
+				.category(1L)
+				.divclsNo(5)
+				.maxNum(20)
+				.curNum(0)
+				.node(null)
+				.edge(null)
+				.build();
+		
+		mockMvc.perform(put("/api/course/1").with(csrf())
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(objectMapper.writeValueAsString(courseDto)))
+			.andDo(print())
+			.andExpect(status().is4xxClientError());
+	}
+	
 	@Test
 	public void deleteBoard() throws Exception{
 		mockMvc.perform(delete("/api/course/103").with(csrf())

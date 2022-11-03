@@ -3,12 +3,10 @@ package com.spring.course.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.spring.board.model.BoardDto;
 import com.spring.common.util.AppUtil;
 import com.spring.course.model.CourseDto;
 import com.spring.course.service.CourseService;
