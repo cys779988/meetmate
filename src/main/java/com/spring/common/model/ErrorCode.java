@@ -8,6 +8,10 @@ public enum ErrorCode {
 	DUPLICATED_APPLY(400, "C_005", "이미 신청한 COURSE 입니다."),
 	EXCEED_APPLY(400, "C_006", "신청인원이 초과하여 마감되었습니다."),
 	
+	INVALID_FILE_EXTN(400, "F_001", "적절하지 않은 파일확장자입니다."),
+	EXCEED_FILE_SIZE(400, "F_002", "최대 파일크기를 초과했습니다."),
+	NOTFOUND_FILE(404, "F_003", "파일을 찾을 수 없습니다."),
+
 	AUTH_ERROR(400, "AU_001", "인증 관련 오류가 발생했습니다."),
 	DUPLICATED_EMAIL(400, "AU_002", "이미 존재하는 E-mail입니다."),
 	NOTFOUND_EMAIL(400, "AU_003", "존재하지 않는 E-mail입니다."),

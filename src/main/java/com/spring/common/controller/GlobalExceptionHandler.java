@@ -3,11 +3,12 @@ package com.spring.common.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.spring.common.exception.BusinessException;
 import com.spring.common.model.ErrorCode;
@@ -16,19 +17,27 @@ import com.spring.common.model.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+
+	@ExceptionHandler(BindException.class)
+	protected ResponseEntity<ErrorResponse> handleBindException(BindException e) {
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE,
 			e.getBindingResult());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
-
+	
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 		MethodArgumentTypeMismatchException e) {
 		ErrorResponse response = ErrorResponse.of(e);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	protected ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(
+			MaxUploadSizeExceededException e) {
+		ErrorResponse response = ErrorResponse.of(ErrorCode.EXCEED_FILE_SIZE);
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
