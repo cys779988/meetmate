@@ -1,5 +1,6 @@
 package com.spring.group.model;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class GroupEntity extends BaseTimeEntity{
 	
 	@EmbeddedId
+	@Column(name = "GROUP_ID")
 	private GroupID id;
 	
 	private Long divNo;

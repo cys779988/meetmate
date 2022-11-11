@@ -17,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.spring.board.model.BoardDto;
 import com.spring.board.model.BoardEntity;
 import com.spring.board.model.ReplyDto;
 import com.spring.board.model.ReplyEntity;
@@ -73,13 +72,14 @@ public class BoardDataJpaTest {
 	@Test
 	@DisplayName("게시글 등록")
 	public void addBoard() throws JsonProcessingException {
-		BoardDto dto = BoardDto.builder()
-				.content("테스트내용")
-				.registrant("admin")
-				.title("테스트제목")
-				.build();
-
-		BoardEntity entity = dto.toEntity();
+		Optional<UserEntity> userWrapper = userRepository.findById(ID);
+				
+		BoardEntity entity = BoardEntity.builder()
+										.title("테스트제목")
+										.content("테스트내용")
+										.registrant(userWrapper.get())
+										.build();
+		
 		Long id = boardRepository.save(entity).getId();
 		
 		Optional<BoardEntity> boardWrapper = boardRepository.findById(id);
@@ -92,13 +92,14 @@ public class BoardDataJpaTest {
 	public void deleteBoard() throws JsonProcessingException {
 		Long beforeCount = boardRepository.count();
 		
-		BoardDto dto = BoardDto.builder()
-				.content("테스트내용")
-				.registrant("admin")
+		Optional<UserEntity> userWrapper = userRepository.findById(ID);
+		
+		BoardEntity entity = BoardEntity.builder()
 				.title("테스트제목")
+				.content("테스트내용")
+				.registrant(userWrapper.get())
 				.build();
 		
-		BoardEntity entity = dto.toEntity();
 		Long id = boardRepository.save(entity).getId();
 
 		boardRepository.deleteById(id);
@@ -114,8 +115,10 @@ public class BoardDataJpaTest {
 				.registrant("admin")
 				.content("테스트내용")
 				.build();
+		Optional<UserEntity> userWrapper = userRepository.findById(ID);
 		
-		ReplyEntity entity = dto.toEntity();
+		ReplyEntity entity = dto.toEntity(userWrapper.get());
+		
 		Long id = replyRepository.save(entity).getId();
 		
 		Optional<ReplyEntity> replyWrapper = replyRepository.findById(id);
@@ -132,8 +135,9 @@ public class BoardDataJpaTest {
 				.registrant("admin")
 				.content("테스트내용")
 				.build();
+		Optional<UserEntity> userWrapper = userRepository.findById(ID);
 		
-		ReplyEntity entity = dto.toEntity();
+		ReplyEntity entity = dto.toEntity(userWrapper.get());
 		Long id = replyRepository.save(entity).getId();
 		
 		replyRepository.deleteById(id);

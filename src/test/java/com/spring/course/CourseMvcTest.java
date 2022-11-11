@@ -95,7 +95,6 @@ class CourseMvcTest {
 		CourseDto courseDto = CourseDto.builder()
 				.title("테스트제목")
 				.registrant("admin")
-				.content("")
 				.category(1L)
 				.divclsNo(5)
 				.maxNum(20)

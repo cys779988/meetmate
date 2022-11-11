@@ -3,10 +3,9 @@ package com.spring.board.model;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import javax.validation.constraints.NotBlank;
-
-import com.spring.security.model.UserEntity;
+import com.spring.file.model.FileDto;
 
 @Getter
 @Setter
@@ -17,30 +16,21 @@ public class BoardDto {
     
     private String registrant;
     
-    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
     
-    @NotBlank(message = "내용을 입력해주세요.")
     private String content;
+    
+    private List<FileDto> fileList;
     
     private LocalDateTime createdDate;
     
-    public BoardEntity toEntity(){
-        BoardEntity boardEntity = BoardEntity.builder()
-                .id(id)
-                .registrant((UserEntity.builder().email(registrant)).build())
-                .title(title)
-                .content(content)
-                .build();
-        return boardEntity;
-    }
-
     @Builder
-    public BoardDto(Long id, String registrant, String title, String content, LocalDateTime createdDate) {
+    public BoardDto(Long id, String registrant, String title, String content, List<FileDto> fileList, LocalDateTime createdDate) {
         this.id = id;
         this.registrant = registrant;
         this.title = title;
         this.content = content;
+        this.fileList = fileList;
         this.createdDate = createdDate;
     }
 }

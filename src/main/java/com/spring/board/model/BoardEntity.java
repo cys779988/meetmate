@@ -23,11 +23,15 @@ public class BoardEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="BOARD_ID")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "email", foreignKey = @ForeignKey(name = "fk_board_user"))
+	@JoinColumn(referencedColumnName = "EMAIL", foreignKey = @ForeignKey(name = "fk_board_user"))
 	private UserEntity registrant;
+
+	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+	private List<BoardFileEntity> files = new ArrayList<>();
 
 	@Column(length = 30, nullable = false)
 	private String title;

@@ -52,6 +52,7 @@
 <script src="<c:url value='/js/grid/grid.js'/>"></script>
 <script src="<c:url value='/js/common.js'/>"></script>
 <script>
+window.addEventListener('DOMContentLoaded', () => {
 	document.getElementById("search-btn").addEventListener("click", (e) => {
 		grid.readData(1, {search: $("input[name = search]").val()});
 	});
@@ -124,6 +125,7 @@
 	
 	const grid = createGrid_paging('grid', dataSource, columnData, 'auto', 10);
 	tui.Grid.applyTheme('clean');
+});
 </script>
 </body>
 </html>

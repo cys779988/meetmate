@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import com.spring.board.model.BoardDto;
 import com.spring.board.model.BoardEntity;
+import com.spring.board.model.BoardRequest;
 import com.spring.board.model.ReplyDto;
 import com.spring.board.model.ReplyEntity;
 import com.spring.board.repository.BoardRepository;
@@ -30,9 +31,11 @@ import com.spring.board.repository.ReplyRepository;
 import com.spring.board.service.BoardService;
 import com.spring.common.model.GridForm;
 import com.spring.common.model.GridResponse;
+import com.spring.common.util.AppUtil;
 import com.spring.common.util.GridUtil;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
+import com.spring.security.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
@@ -42,6 +45,9 @@ class BoardServiceTest {
 
     @Mock
     private BoardRepository boardRepository;	
+
+    @Mock
+    private UserRepository userRepository;	
 	
     @Mock
     private BoardRepositorySupport boardRepositorySupport;	
@@ -49,9 +55,10 @@ class BoardServiceTest {
     @Mock
     private ReplyRepository replyRepository;	
     
+    private static final String ID = "admin";
     private BoardEntity getBoardData() {
     	UserEntity user =  UserEntity.builder()
-				.email("cys779988@naver.com")
+				.email(ID)
 				.name("채영수")
 				.role(Role.GUEST)
 				.password("1234")
@@ -82,7 +89,7 @@ class BoardServiceTest {
     
     private List<BoardEntity> getBoardListData() {
     	UserEntity user =  UserEntity.builder()
-    							.email("cys779988@naver.com")
+    							.email(ID)
     							.name("채영수")
     							.role(Role.GUEST)
     							.password("")
@@ -124,30 +131,32 @@ class BoardServiceTest {
     
     @Test
     public void getBoard() {
-    	
     	UserEntity user =  UserEntity.builder()
-				.email("cys779988@naver.com")
+				.email(ID)
 				.name("채영수")
 				.role(Role.GUEST)
 				.password("")
 				.build();
     	
-    	Optional<BoardEntity> entityWrapper = Optional.of(BoardEntity.builder().id(1L).registrant(user).title("테스트제목1").content("테스트글1").build());
-    	
-    	when(boardRepository.findById(1L)).thenReturn(entityWrapper);
+    	when(boardRepositorySupport.findById(1L)).thenReturn(BoardEntity.builder()
+    																	.id(1L)
+    																	.registrant(user)
+    																	.title("테스트제목1")
+    																	.content("테스트글1")
+    																	.build());
     	
     	BoardDto board = boardService.getBoard(1L);
     	
     	assertThat(board, notNullValue());
     	
-    	verify(boardRepository, times(1)).findById(1L);
+    	verify(boardRepositorySupport, times(1)).findById(1L);
     }
     
     @Test
     public void getReplys() {
     	when(replyRepository.findByBoardId(1L)).thenReturn(getReplyData());
     	
-    	List<ReplyEntity> replyList = boardService.getReplys(1L);
+    	List<ReplyDto> replyList = boardService.getReplys(1L);
     	
     	assertThat(replyList.size(), is(5));
     	
@@ -166,20 +175,25 @@ class BoardServiceTest {
 					        .registrant(boardEntity.getRegistrant().getEmail())
 					        .build();
     	
-    			
     	when(boardRepository.save(any(BoardEntity.class))).thenReturn(new BoardEntity(1L, boardEntity.getRegistrant(), "테스트제목", "테스트글"));
+    	when(userRepository.findById(ID)).thenReturn(Optional.of(UserEntity.builder()
+																			.email(ID)
+																			.name("채영수")
+																			.role(Role.GUEST)
+																			.password("1234")
+																			.build()));
 
-    	Long id = boardService.addBoard(boardDto);
-    	
-    	assertThat(boardDto.getId(), is(id));
-    	
+    	try(MockedStatic<AppUtil> appUtil = Mockito.mockStatic(AppUtil.class)) {
+    		when(AppUtil.getUser()).thenReturn(ID);
+    		Long id = boardService.addBoard(new BoardRequest());
+    		assertThat(boardDto.getId(), is(id));
+    	}
     	verify(boardRepository, times(1)).save(any(BoardEntity.class));
 	}
     
     @Test
     public void addReply() {
     	BoardEntity boardEntity = getBoardData();
-    	
     	
     	ReplyDto replyDto = ReplyDto.builder()
     							.id(1L)
@@ -189,11 +203,18 @@ class BoardServiceTest {
     							.build();
     							
     	when(replyRepository.save(any(ReplyEntity.class))).thenReturn(new ReplyEntity(replyDto.getId(), replyDto.getContent(), boardEntity, boardEntity.getRegistrant()));
+    	when(userRepository.findById(ID)).thenReturn(Optional.of(UserEntity.builder()
+																			.email(ID)
+																			.name("채영수")
+																			.role(Role.GUEST)
+																			.password("1234")
+																			.build()));
     	
-    	Long id = boardService.addReply(replyDto);
-    	
-    	assertThat(replyDto.getId(), is(id));
-    	
+    	try(MockedStatic<AppUtil> appUtil = Mockito.mockStatic(AppUtil.class)) {
+    		when(AppUtil.getUser()).thenReturn(ID);
+	    	Long id = boardService.addReply(replyDto);
+	    	assertThat(replyDto.getId(), is(id));
+    	}
     	verify(replyRepository, times(1)).save(any(ReplyEntity.class));
     }
 }

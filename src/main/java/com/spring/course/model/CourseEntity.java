@@ -26,10 +26,11 @@ public class CourseEntity extends BaseTimeEntity {
 	
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Column(name="COURSE_ID")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(referencedColumnName = "email", foreignKey = @ForeignKey(name = "fk_course_user"))
+	@JoinColumn(referencedColumnName = "EMAIL", foreignKey = @ForeignKey(name = "fk_course_user"))
 	private UserEntity registrant;
 	
 	@Column(length = 30, nullable = false)
@@ -39,7 +40,7 @@ public class CourseEntity extends BaseTimeEntity {
 	private String content;
 
 	@ManyToOne
-	@JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_course_category"))
+	@JoinColumn(name = "CATEGORY_ID", foreignKey = @ForeignKey(name = "fk_course_category"))
 	private CategoryEntity category;
 
 	private Integer divclsNo;
@@ -50,11 +51,11 @@ public class CourseEntity extends BaseTimeEntity {
 	private Integer curNum;
 
 	@Lob
-	@Column(name = "map_node", columnDefinition = "BLOB")
+	@Column(name = "MAP_NODE", columnDefinition = "BLOB")
 	private String node;
 
 	@Lob
-	@Column(name = "map_edge", columnDefinition = "BLOB")
+	@Column(name = "MAP_EDGE", columnDefinition = "BLOB")
 	private String edge;
 	
 	/*

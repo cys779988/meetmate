@@ -3,11 +3,11 @@ package com.spring.board;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,6 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,7 +30,6 @@ import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.board.controller.BoardController;
 import com.spring.board.controller.BoardRestController;
-import com.spring.board.model.BoardDto;
 import com.spring.board.service.BoardService;
 import com.spring.security.config.SecurityConfig;
 
@@ -71,25 +72,13 @@ class BoardMvcTest {
     
 	@Test
 	public void addBoard() throws Exception{
-		BoardDto boardDto = BoardDto.builder()
-				.title("추가된 제목")
-				.content("추가된 내용")
-				.registrant("cys779988@naver.com")
-				.build();
+		MockMultipartFile file = new MockMultipartFile("files", "testFile.png", "image/png", "file".getBytes());
 		
-		/*
-		 * Map<String, String> convertMap = objectMapper.convertValue(boardDto,
-		 * Map.class);
-		 * 
-		 * MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
-		 * 
-		 * param.setAll(convertMap);
-		 */
-		
-		mockMvc.perform(post("/api/board/").with(csrf())
-					.contentType(MediaType.APPLICATION_JSON_VALUE)
-					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.content(objectMapper.writeValueAsString(boardDto)))
+		mockMvc.perform(multipart("/api/board/")
+					.file(file)
+					.part(new MockPart("title", "추가된 제목".getBytes()))
+					.part(new MockPart("content", "추가된 내용".getBytes()))
+					.with(csrf()))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andReturn();
@@ -97,35 +86,29 @@ class BoardMvcTest {
 	
 	@Test
 	public void expect4xxErrorAddBoard() throws Exception{
-		BoardDto boardDto = BoardDto.builder()
-				.title("추가된 제목")
-				.content("")
-				.registrant("cys779988@naver.com")
-				.build();
+		MockMultipartFile file = new MockMultipartFile("files", "testFile.png", "image/png", "file".getBytes());
 		
-		mockMvc.perform(post("/api/board/").with(csrf())
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.content(objectMapper.writeValueAsString(boardDto)))
-		.andDo(print())
-		.andExpect(status().is4xxClientError())
-		.andReturn();
+		mockMvc.perform(multipart("/api/board/")
+				.file(file)
+				.part(new MockPart("content", "추가된 내용".getBytes()))
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().is4xxClientError())
+			.andReturn();
 	}
 	
 	@Test
 	public void editBoard() throws Exception{
-		BoardDto boardDto = BoardDto.builder()
-				.title("수정된 제목")
-				.content("수정된 내용")
-				.registrant("cys779988@naver.com")
-				.build();
-		
-		mockMvc.perform(put("/api/board/1").with(csrf())
-					.contentType(MediaType.APPLICATION_JSON_VALUE)
-					.accept(MediaType.APPLICATION_JSON_VALUE)
-					.content(objectMapper.writeValueAsString(boardDto)))
-				.andDo(print())
-				.andExpect(status().isOk());
+		MockMultipartFile file = new MockMultipartFile("files", "testFile.png", "image/png", "file".getBytes());
+		mockMvc.perform(multipart("/api/board/1")
+				.file(file)
+				.part(new MockPart("deleteFiles", "1".getBytes()))
+				.part(new MockPart("deleteFiles", "2".getBytes()))
+				.part(new MockPart("title", "추가된 제목".getBytes()))
+				.part(new MockPart("content", "추가된 내용".getBytes()))
+				.with(csrf()))
+			.andDo(print())
+			.andExpect(status().isOk());
 	}
 
 

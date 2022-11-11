@@ -34,18 +34,18 @@ public class BoardController {
 
 	@GetMapping("/{no}")
 	public String detailView(@PathVariable("no") Long no, Model model) {
-		BoardDto boardDto = boardService.getBoard(no);
-		if(boardDto.getRegistrant().equals(AppUtil.getUser())){
+		BoardDto board = boardService.getBoard(no);
+		if(board.getRegistrant().equals(AppUtil.getUser())){
 			model.addAttribute("owner", true);
 		}
-		model.addAttribute("boardDto", boardDto);
+		model.addAttribute("board", board);
 		return "board/detail";
 	}
 	
 	@GetMapping("/edit/{no}")
 	public String editView(@PathVariable("no") Long no, Model model) {
-		BoardDto boardDto = boardService.getBoard(no);
-		model.addAttribute("boardDto", boardDto);
+		BoardDto board = boardService.getBoard(no);
+		model.addAttribute("board", board);
 		return "board/update";
 	}
 }

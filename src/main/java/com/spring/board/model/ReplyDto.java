@@ -24,11 +24,11 @@ public class ReplyDto {
 
 	private LocalDateTime createdDate;
 	
-    public ReplyEntity toEntity(){
+    public ReplyEntity toEntity(UserEntity user){
     	ReplyEntity replyEntity = ReplyEntity.builder()
                 .id(id)
                 .board((BoardEntity.builder().id(boardId)).build())
-                .registrant((UserEntity.builder().email(registrant)).build())
+                .registrant(user)
                 .content(content)
                 .build();
         return replyEntity;
