@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "<c:url value='/board/'/>";
+		location.href = "<c:url value='/board'/>";
 	})
 
 	document.getElementById('add-btn').addEventListener("click", (e)=> {
@@ -72,7 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
 		})
 		
 		$.ajax({
-			url : "<c:url value='/api/board/'/>",
+			url : "<c:url value='/api/board'/>",
 			method : "post",
 			data : formData,
 			enctype : 'multipart/form-data',
@@ -80,7 +80,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			contentType : false,
 			success : function(result) {
 				console.log(result);
-				location.href = "<c:url value='/board/'/>";
+				location.href = "<c:url value='/board'/>";
 			}
 		});
 	})

@@ -5,17 +5,15 @@
                 <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <sec:authorize access="hasAnyRole('ROLE_ADMIN')">
+                            <sec:authorize access="hasRole('ADMIN')">
+                            <div class="sb-sidenav-menu-heading">Admin</div>
 	                            <a class="nav-link" href="/">
 	                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
 	                                Dashboard
 	                            </a>
-                            </sec:authorize>
-                            <sec:authorize access="isAnonymous()">
-	                            <a class="nav-link" href="<c:url value='/user/signup'/>">
-	                                <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
-	                                SignUp
+	                            <a class="nav-link" href="<c:url value='/admin/code'/>">
+	                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+	                                CodeManagement
 	                            </a>
                             </sec:authorize>
                             <!-- <div class="sb-sidenav-menu-heading">Interface</div>
@@ -60,15 +58,21 @@
                                 </nav>
                             </div> -->
                             <div class="sb-sidenav-menu-heading">MENU</div>
+	                            <sec:authorize access="isAnonymous()">
+		                            <a class="nav-link" href="<c:url value='/user/signup'/>">
+		                                <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
+		                                SignUp
+		                            </a>
+	                            </sec:authorize>
 	                            <a class="nav-link" href="<c:url value='/'/>">
 		                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
 		                            Chart
 	                            </a>
-	                            <a class="nav-link" href="<c:url value='/board/'/>">
+	                            <a class="nav-link" href="<c:url value='/board'/>">
 		                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 		                            Board
 	                            </a>
-	                            <a class="nav-link" href="<c:url value='/course/'/>">
+	                            <a class="nav-link" href="<c:url value='/course'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
 	                            	Course
 	                            </a>
@@ -76,7 +80,7 @@
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
 	                            	Chat
 	                            </a>
-	                            <a class="nav-link" href="<c:url value='/group/'/>">
+	                            <a class="nav-link" href="<c:url value='/group'/>">
 	                            	<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
 	                            	Group
 	                            </a>

@@ -15,14 +15,14 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/group/*")
+@RequestMapping("/group*")
 public class GroupMngController {
 
 	private GroupMngService groupMngService;
 	
 	private CourseService courseService;
 	
-	@GetMapping("/")
+	@GetMapping
 	public String groupMngView(Model model) {
 		model.addAttribute("course", courseService.getCourseByUser(AppUtil.getUser()));
 		return "group/list";

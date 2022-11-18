@@ -34,13 +34,13 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/board/*")
+@RequestMapping("/api/board*")
 @SuppressWarnings("rawtypes")
 public class BoardRestController {
 
 	BoardService boardService;
 
-	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity getBoards(Pageable page, @RequestParam(value = "search", required = false) String searchParam) {
 		GridForm boardsGridForm = boardService.getBoardsGridForm(page, searchParam);
 		return ResponseEntity.ok(boardsGridForm);
@@ -51,7 +51,7 @@ public class BoardRestController {
 		return ResponseEntity.ok(boardService.getReplys(no));
 	}
 
-	@PostMapping(value = "/")
+	@PostMapping
 	public ResponseEntity addBoard(@Valid BoardRequest boardRequest) {
 		boardService.addBoard(boardRequest);
 		return ResponseEntity.ok(null);

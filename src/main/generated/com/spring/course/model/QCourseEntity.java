@@ -24,7 +24,7 @@ public class QCourseEntity extends EntityPathBase<CourseEntity> {
 
     public final com.spring.common.model.QBaseTimeEntity _super = new com.spring.common.model.QBaseTimeEntity(this);
 
-    public final QCategoryEntity category;
+    public final NumberPath<Long> category = createNumber("category", Long.class);
 
     public final StringPath content = createString("content");
 
@@ -68,7 +68,6 @@ public class QCourseEntity extends EntityPathBase<CourseEntity> {
 
     public QCourseEntity(Class<? extends CourseEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.category = inits.isInitialized("category") ? new QCategoryEntity(forProperty("category")) : null;
         this.registrant = inits.isInitialized("registrant") ? new com.spring.security.model.QUserEntity(forProperty("registrant")) : null;
     }
 

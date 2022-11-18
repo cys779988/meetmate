@@ -54,7 +54,7 @@ public class CourseDto {
 	              .registrant(UserEntity.builder().email(registrant).build())
 	              .title(title)
 	              .content(content)
-	              .category(CategoryEntity.builder().id(category).build())
+	              .category(category)
 	              .divclsNo(divclsNo)
 	              .maxNum(maxNum)
 	              .curNum(curNum)

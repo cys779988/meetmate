@@ -73,8 +73,8 @@
 		return new tui.Grid({
 			el: document.getElementById(el),
 			data: apiInfo,
-			scrollX: false,
-			scrollY: false,
+			scrollX: true,
+			scrollY: true,
 			bodyHeight: height,
 			minBodyHeight : height,
 			pageOptions: {

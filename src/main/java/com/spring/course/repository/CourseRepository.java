@@ -11,9 +11,7 @@ import com.spring.course.model.CourseEntity;
 
 @Repository
 public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
-	Page<CourseEntity> findByCategoryId(Pageable pageable, Long id);
+	Page<CourseEntity> findByCategory(Pageable pageable, Long category);
 	
 	List<CourseEntity> findByRegistrant_email(String email);
-	
-	Long countByCategoryId(Long id);
 }

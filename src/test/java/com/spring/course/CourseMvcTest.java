@@ -25,6 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.code.service.CommonCodeService;
 import com.spring.course.controller.CourseController;
 import com.spring.course.controller.CourseRestController;
 import com.spring.course.model.CourseDto;
@@ -44,10 +45,13 @@ class CourseMvcTest {
 
     @MockBean
     private CourseService courseService;
+
+    @MockBean
+    private CommonCodeService commonCodeService;
 	
 	@Test
 	public void courseListTest() throws Exception{
-		mockMvc.perform(get("/course/"))
+		mockMvc.perform(get("/course"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("course/list"))
 		.andDo(print());
@@ -59,7 +63,7 @@ class CourseMvcTest {
     	param.add("page", "1");
     	param.add("perPage", "10");
     	
-        mockMvc.perform(get("/api/course/")
+        mockMvc.perform(get("/api/course")
         			.params(param)
 	        		.contentType(MediaType.APPLICATION_JSON_VALUE)
 	        		.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -81,7 +85,7 @@ class CourseMvcTest {
 						.edge(null)
 						.build();
 		
-		mockMvc.perform(post("/api/course/").with(csrf())
+		mockMvc.perform(post("/api/course").with(csrf())
 					.contentType(MediaType.APPLICATION_JSON_VALUE)
 					.accept(MediaType.APPLICATION_JSON_VALUE)
 					.content(objectMapper.writeValueAsString(courseDto)))
@@ -103,7 +107,7 @@ class CourseMvcTest {
 				.edge(null)
 				.build();
 		
-		mockMvc.perform(post("/api/course/").with(csrf())
+		mockMvc.perform(post("/api/course").with(csrf())
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(objectMapper.writeValueAsString(courseDto)))

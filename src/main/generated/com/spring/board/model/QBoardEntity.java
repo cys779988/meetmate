@@ -29,6 +29,8 @@ public class QBoardEntity extends EntityPathBase<BoardEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
+    public final ListPath<BoardFileEntity, QBoardFileEntity> files = this.<BoardFileEntity, QBoardFileEntity>createList("files", BoardFileEntity.class, QBoardFileEntity.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited

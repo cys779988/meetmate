@@ -46,18 +46,19 @@ h1 {
 							<div class="mb-3">
 								<input type="text" class="form-control" name="title" id="title" placeholder="제목">
 							    <div>
-							    	<p id="titleError"></p>
+							    	<p class="errorText" id="titleError"></p>
 							    </div>
 							</div>
 							<div class="mb-3">
 								<label for="category" class="form-label">분류</label>
 								<select class="form-control" name="category" id="category">
-									<option value="1">스터디</option>
-									<option value="2">모임</option>
+							        <c:forEach items="${category}" var="result">
+							        	<option value="${result.id}">${result.name}</option>
+							        </c:forEach>
 								</select>
 								<br>
 							    <div>
-							    	<p id="typeError"></p>
+							    	<p class="errorText" id="typeError"></p>
 							    </div>
 							</div>
 							<div class="row g-3">
@@ -68,13 +69,13 @@ h1 {
 									<input type="text" class="form-control" name="maxNum" id="maxNum" placeholder="최대인원">
 								</div>
 							    <div>
-							    	<p id="maxNumError"></p>
+							    	<p class="errorText" id="maxNumError"></p>
 							    </div>
 							</div>
 							<div class="mb-3">
 								<textarea class="form-control" rows="5" name="content" id="content" placeholder="내용"></textarea>
 								<div>
-							    	<p id="contentError"></p>
+							    	<p class="errorText" id="contentError"></p>
 							    </div>
 							</div>
 						</form>
@@ -791,7 +792,7 @@ h1 {
 	}
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "<c:url value='/course/'/>";
+		location.href = "<c:url value='/course'/>";
 	})
 
 	document.getElementById('add-btn').addEventListener("click", (e)=> {
@@ -809,21 +810,12 @@ h1 {
 		  	param.edge.push(data);
 	    })
 		$.ajax({
-			url : "<c:url value='/api/course/'/>",
+			url : "<c:url value='/api/course'/>",
 			method : "post",
 			data : JSON.stringify(param),
 			contentType : "application/json",
 			success : function(result) {
-				location.href = "<c:url value='/course/'/>";
-			},
-			error : function(result){
-				$('p').empty();
-				var messages = JSON.parse(result.responseText);
-				
-				messages.forEach(error => {
-					$('#'+Object.getOwnPropertyNames(error)+'Error').append(Object.values(error));
-				});
-				$('#'+Object.getOwnPropertyNames(messages[0])).focus();
+				location.href = "<c:url value='/course'/>";
 			}
 		});
 	})

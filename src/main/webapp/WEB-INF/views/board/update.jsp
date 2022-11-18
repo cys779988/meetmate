@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
 			contentType : false,
 			success : function(result) {
 				console.log(result);
-				location.href = "<c:url value='/board/'/>";
+				location.href = "<c:url value='/board'/>";
 			}
 		});
 	})

@@ -29,7 +29,7 @@ public class CodeDataJpaTest {
 
 	@Test
 	@DisplayName("공통코드 조회")
-	public void countByTitleBoard() {
+	public void addCode() {
 
 		CommonCodeEntity codeEntity = commonCodeRepository.save(CommonCodeEntity.builder().name("스터디").type(CodeType.COURSE_CATEGORY).build());
 		

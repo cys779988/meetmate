@@ -16,13 +16,13 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/board/*")
+@RequestMapping("/board*")
 public class BoardController {
 
 	private BoardService boardService;
 	
 	@PerLogging
-	@RequestMapping("/")
+	@GetMapping
 	public String listView() {
 		return "board/list";
 	}

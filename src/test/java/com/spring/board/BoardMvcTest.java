@@ -50,7 +50,7 @@ class BoardMvcTest {
 	
 	@Test
 	public void boardListTest() throws Exception{
-		mockMvc.perform(get("/board/"))
+		mockMvc.perform(get("/board"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("board/list"))
 		.andDo(print());
@@ -62,7 +62,7 @@ class BoardMvcTest {
     	param.add("page", "1");
     	param.add("perPage", "10");
     	
-        mockMvc.perform(get("/api/board/")
+        mockMvc.perform(get("/api/board")
         			.params(param)
 	        		.contentType(MediaType.APPLICATION_JSON_VALUE)
 	        		.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -74,7 +74,7 @@ class BoardMvcTest {
 	public void addBoard() throws Exception{
 		MockMultipartFile file = new MockMultipartFile("files", "testFile.png", "image/png", "file".getBytes());
 		
-		mockMvc.perform(multipart("/api/board/")
+		mockMvc.perform(multipart("/api/board")
 					.file(file)
 					.part(new MockPart("title", "추가된 제목".getBytes()))
 					.part(new MockPart("content", "추가된 내용".getBytes()))
@@ -88,7 +88,7 @@ class BoardMvcTest {
 	public void expect4xxErrorAddBoard() throws Exception{
 		MockMultipartFile file = new MockMultipartFile("files", "testFile.png", "image/png", "file".getBytes());
 		
-		mockMvc.perform(multipart("/api/board/")
+		mockMvc.perform(multipart("/api/board")
 				.file(file)
 				.part(new MockPart("content", "추가된 내용".getBytes()))
 				.with(csrf()))

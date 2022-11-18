@@ -91,7 +91,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
 
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "<c:url value='/board/'/>";
+		location.href = "<c:url value='/board'/>";
 	})
 
 	document.getElementById('modify-btn').addEventListener('click',(e) => {
@@ -105,7 +105,7 @@ window.addEventListener('DOMContentLoaded', (e) => {
 			url : "<c:url value='/api/board/${board.id}'/>",
 			type : "delete",
 			success : function(result){
-				location.href = "<c:url value='/board/'/>";
+				location.href = "<c:url value='/board'/>";
 			}
 		});
 	})

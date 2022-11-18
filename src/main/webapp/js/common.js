@@ -22,21 +22,21 @@
 $(document).ajaxError((e, xhr, opt, err) => {
 	e.preventDefault();
 	e.stopPropagation();
-
+	$('p.errorText').empty();
 	const responseText = JSON.parse(xhr.responseText);
 	const fieldErrorMessage = responseText.errors;
 	
 	if(fieldErrorMessage.length > 0) {
-		fieldErrorMessage.forEach(error => {
-			$('#'+Object.getOwnPropertyNames(error.field)+'Error').append(Object.values(error.reason));
+		fieldErrorMessage.forEach((error, i) => {
+			$('#'+error.field+'Error').append(error.reason);
+			
+			if(i === 0) {
+				$('#'+error.field).focus();
+			}
 		});
 	} else {
 		alert(responseText.message);
 	}
-});
-
-$(document).ajaxComplete((e) => {
-	$('p.errorText').empty();
 });
 
 function popUp(url, name){

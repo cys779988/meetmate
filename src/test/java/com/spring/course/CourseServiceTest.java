@@ -31,10 +31,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.code.service.CommonCodeService;
 import com.spring.common.model.GridForm;
 import com.spring.common.model.GridResponse;
 import com.spring.common.util.GridUtil;
-import com.spring.course.model.CategoryEntity;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CourseRepository;
@@ -51,12 +51,15 @@ class CourseServiceTest {
 
 	@Spy
 	private ObjectMapper objectMapper;
+
+	@Mock
+	private CommonCodeService commonCodeService;
 	
     @Mock
-    private CourseRepository courseRepository;	
+    private CourseRepository courseRepository;
 	
     @Mock
-    private CourseRepositorySupport courseRepositorySupport;	
+    private CourseRepositorySupport courseRepositorySupport;
     
     private CourseEntity getCourseData() {
     	String node = "[{\"data\":{\"id\":\"Main\",\"name\":\"Main\",\"content\":\"Main\",\"shape\":\"round-hexagon\",\"width\":80,\"height\":40,\"font\":7,\"color\":\"#D0C1B2\"},\"renderedPosition\":{\"x\":-6.666666666666669,\"y\":37.333333333333336}}]";
@@ -72,7 +75,7 @@ class CourseServiceTest {
     			.id(1L)
     			.registrant(user)
     			.title("테스트제목")
-    			.category(CategoryEntity.builder().id(1L).build())
+    			.category(1L)
     			.content("테스트글")
     			.curNum(1)
     			.maxNum(20)
@@ -94,20 +97,19 @@ class CourseServiceTest {
     							.password("")
     							.build();
     	
-    	CategoryEntity category = CategoryEntity.builder().id(1L).build();
     	List<CourseEntity> courseList = Arrays.asList(
-    			CourseEntity.builder().id(1L).registrant(user).title("테스트제목1").category(category).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(2L).registrant(user).title("테스트제목2").category(category).content("테스트글").curNum(3).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(3L).registrant(user).title("테스트제목3").category(category).content("테스트글").curNum(4).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(4L).registrant(user).title("테스트제목4").category(category).content("테스트글").curNum(2).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(5L).registrant(user).title("테스트제목5").category(category).content("테스트글").curNum(5).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(6L).registrant(user).title("테스트제목6").category(category).content("테스트글").curNum(7).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(7L).registrant(user).title("테스트제목7").category(category).content("테스트글").curNum(9).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(8L).registrant(user).title("테스트제목8").category(category).content("테스트글").curNum(6).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(9L).registrant(user).title("테스트제목9").category(category).content("테스트글").curNum(5).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(10L).registrant(user).title("테스트제목10").category(category).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(11L).registrant(user).title("테스트제목11").category(category).content("테스트글").curNum(2).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
-    			CourseEntity.builder().id(12L).registrant(user).title("테스트제목12").category(category).content("테스트글").curNum(3).maxNum(20).divclsNo(2).node(node).edge(edge).build()
+    			CourseEntity.builder().id(1L).registrant(user).title("테스트제목1").category(1L).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(2L).registrant(user).title("테스트제목2").category(1L).content("테스트글").curNum(3).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(3L).registrant(user).title("테스트제목3").category(1L).content("테스트글").curNum(4).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(4L).registrant(user).title("테스트제목4").category(1L).content("테스트글").curNum(2).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(5L).registrant(user).title("테스트제목5").category(1L).content("테스트글").curNum(5).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(6L).registrant(user).title("테스트제목6").category(1L).content("테스트글").curNum(7).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(7L).registrant(user).title("테스트제목7").category(1L).content("테스트글").curNum(9).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(8L).registrant(user).title("테스트제목8").category(1L).content("테스트글").curNum(6).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(9L).registrant(user).title("테스트제목9").category(1L).content("테스트글").curNum(5).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(10L).registrant(user).title("테스트제목10").category(1L).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(11L).registrant(user).title("테스트제목11").category(1L).content("테스트글").curNum(2).maxNum(20).divclsNo(2).node(node).edge(edge).build(),
+    			CourseEntity.builder().id(12L).registrant(user).title("테스트제목12").category(1L).content("테스트글").curNum(3).maxNum(20).divclsNo(2).node(node).edge(edge).build()
     	);
     	
     	return courseList;
@@ -145,25 +147,6 @@ class CourseServiceTest {
     }
     
     @Test
-    public void getCoursesByCategoryId() {
-    	Pageable page = PageRequest.of(0, 10);
-    	Page<CourseEntity> testData = new PageImpl<CourseEntity>(getCourseListData());
-    	Long id = 1L;
-    	when(courseRepository.findByCategoryId(any(PageRequest.class), any(Long.class))).thenReturn(testData);
-
-    	try(MockedStatic<GridUtil> gridUtil = Mockito.mockStatic(GridUtil.class)) {
-    		when(GridUtil.of(anyInt(), anyLong(), anyList())).thenReturn(new GridForm(true, new GridResponse()));
-    		
-    		GridForm coursesGridForm = courseService.getCoursesGridForm(page, id);
-    	
-    		assertThat(coursesGridForm.getData(), notNullValue());
-
-    		verify(courseRepository, times(1)).findByCategoryId(any(PageRequest.class), any(Long.class));
-    	}
-    	
-    }
-    
-    @Test
     public void getCourse() {
     	String node = "[{\"data\":{\"id\":\"Main\",\"name\":\"Main\",\"content\":\"Main\",\"shape\":\"round-hexagon\",\"width\":80,\"height\":40,\"font\":7,\"color\":\"#D0C1B2\"},\"renderedPosition\":{\"x\":-6.666666666666669,\"y\":37.333333333333336}}]";
     	String edge = "[]";
@@ -174,7 +157,7 @@ class CourseServiceTest {
 				.password("")
 				.build();
     	
-    	Optional<CourseEntity> course = Optional.of(CourseEntity.builder().id(1L).registrant(user).title("테스트제목1").category(CategoryEntity.builder().id(1L).build()).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build());
+    	Optional<CourseEntity> course = Optional.of(CourseEntity.builder().id(1L).registrant(user).title("테스트제목1").category(1L).content("테스트글").curNum(1).maxNum(20).divclsNo(2).node(node).edge(edge).build());
     	
     	when(courseRepository.findById(1L)).thenReturn(course);
     	
@@ -183,28 +166,6 @@ class CourseServiceTest {
     	assertThat(CourseDto, notNullValue());
     	
     	verify(courseRepository, times(1)).findById(1L);
-    }
-    
-    @Test
-    public void getCourseCount() {
-    	when(courseRepository.count()).thenReturn(12L);
-    	
-    	Long boardSize = courseService.getCourseCount(null);
-    	
-    	assertThat(boardSize, is(12L));
-    	
-    	verify(courseRepository, times(1)).count();
-    }
-    
-    @Test
-    public void getCourseCountByTitle() {
-    	when(courseRepository.countByCategoryId(any(Long.class))).thenReturn(12L);
-    	
-    	Long boardSize = courseService.getCourseCount(1L);
-    	
-    	assertThat(boardSize, is(12L));
-    	
-    	verify(courseRepository, times(1)).countByCategoryId(any(Long.class));
     }
     
     @Test
@@ -231,8 +192,8 @@ class CourseServiceTest {
 				.title(courseEntity.getTitle())
 		        .content(courseEntity.getContent())
 		        .divclsNo(courseEntity.getDivclsNo())
-		        .category(courseEntity.getCategory().getId())
-		        .categoryName(courseEntity.getCategory().getName())
+		        .category(courseEntity.getCategory())
+		        .categoryName("스터디")
 		        .maxNum(courseEntity.getMaxNum())
 		        .curNum(courseEntity.getCurNum())
 		        .node(jsonToList(courseEntity.getNode()))
@@ -250,7 +211,7 @@ class CourseServiceTest {
     	String node = "[{\"data\":{\"id\":\"Main\",\"name\":\"Main\",\"content\":\"Main\",\"shape\":\"round-hexagon\",\"width\":80,\"height\":40,\"font\":7,\"color\":\"#D0C1B2\"},\"renderedPosition\":{\"x\":-6.666666666666669,\"y\":37.333333333333336}}]";
     	String edge = "[]";
     	
-    	when(courseRepository.save(any(CourseEntity.class))).thenReturn(new CourseEntity(1L, user, "테스트제목", "테스트글", CategoryEntity.builder().id(1L).build(), 2, 20, 3, node, edge));
+    	when(courseRepository.save(any(CourseEntity.class))).thenReturn(new CourseEntity(1L, user, "테스트제목", "테스트글", 1L, 2, 20, 3, node, edge));
 
     	Long id = courseService.addCourse(courseDto);
     	

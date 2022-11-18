@@ -32,7 +32,7 @@ h1 {
 			<main>
 				<div class="container-fluid px-4">
 					<input type="hidden" value="${courseDto.id}" id="boardId">
-					<h2>${courseDto.title}</h2>
+					<h2>[${courseDto.categoryName}] ${courseDto.title}</h2>
 					<p>[${courseDto.createdDate}]</p>
 				    <p>등록자 : ${courseDto.registrant}</p>
 						    <p>(현재인원 / 최대인원) ${courseDto.curNum} / ${courseDto.maxNum}</p>
@@ -90,7 +90,7 @@ h1 {
 <script>
 	document.getElementById('list-btn').addEventListener('click',(e) => {
 		e.preventDefault();
-		location.href = "<c:url value='/course/'/>";
+		location.href = "<c:url value='/course'/>";
 	})
 	
 	document.addEventListener('DOMContentLoaded', function(){
@@ -239,10 +239,7 @@ h1 {
 			url: "<c:url value='/api/group/apply/${courseDto.id}'/>",
 			type: 'post',
 			success : function(result) {
-				location.href = "<c:url value='/course/'/>"
-			},
-			error : function(error) {
-				alert(error.responseJSON.message);
+				location.href = "<c:url value='/course'/>"
 			}
 		})
 	}
@@ -255,7 +252,7 @@ h1 {
 			url: "<c:url value='/api/course/${courseDto.id}'/>",
 			type: 'delete',
 			success : function(result) {
-				location.href = "<c:url value='/course/'/>"
+				location.href = "<c:url value='/course'/>"
 			}
 		})
 	}

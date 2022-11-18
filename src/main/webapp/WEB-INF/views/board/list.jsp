@@ -118,7 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	
 	const dataSource = {
 		api: {
-			readData: { url: "<c:url value='/api/board/'/>", method: 'GET', initParams: {search: ""}}
+			readData: { url: "<c:url value='/api/board'/>", method: 'GET', initParams: {search: ""}}
 		},
 		contentType: 'application/json'
 	};

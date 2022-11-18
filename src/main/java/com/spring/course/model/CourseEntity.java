@@ -39,9 +39,7 @@ public class CourseEntity extends BaseTimeEntity {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String content;
 
-	@ManyToOne
-	@JoinColumn(name = "CATEGORY_ID", foreignKey = @ForeignKey(name = "fk_course_category"))
-	private CategoryEntity category;
+	private Long category;
 
 	private Integer divclsNo;
 	
@@ -64,7 +62,7 @@ public class CourseEntity extends BaseTimeEntity {
 	 */
 
 	@Builder
-    public CourseEntity(Long id, UserEntity registrant, String title, String content, CategoryEntity category, Integer divclsNo, Integer maxNum, Integer curNum, String node, String edge) {
+    public CourseEntity(Long id, UserEntity registrant, String title, String content, Long category, Integer divclsNo, Integer maxNum, Integer curNum, String node, String edge) {
         this.id = id;
         this.registrant = registrant;
         this.title = title;

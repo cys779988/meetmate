@@ -133,7 +133,7 @@
 	
 	const dataSource = {
 		api: {
-			readData: { url: "<c:url value='/api/course/'/>", method: 'GET'}
+			readData: { url: "<c:url value='/api/course'/>", method: 'GET'}
 		},
 		contentType: 'application/json'
 	};

@@ -12,11 +12,13 @@ import com.spring.course.model.CourseEntity;
 import com.spring.security.model.UserEntity;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Embeddable
 public class GroupID implements Serializable {
 	

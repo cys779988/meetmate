@@ -12,14 +12,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.code.model.CodeType;
+import com.spring.code.service.CommonCodeService;
 import com.spring.common.model.GridForm;
 import com.spring.common.util.GridUtil;
-import com.spring.course.model.CategoryEntity;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
-import com.spring.course.repository.CategoryRepository;
 import com.spring.course.repository.CourseRepository;
-import com.spring.course.repository.CourseRepositorySupport;
 
 import javax.transaction.Transactional;
 
@@ -33,19 +32,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class CourseService {
+	private CommonCodeService commonCodeService;
     private CourseRepository courseRepository;
-    private CategoryRepository categoryRepository;
     private ObjectMapper objectMapper;
-    private CourseRepositorySupport courseRepositorySupport;
     
     @Transactional
-    public GridForm getCoursesGridForm(Pageable page, Long id) {
+    public GridForm getCoursesGridForm(Pageable page, Long category) {
     	Page<CourseEntity> pageCourses;
     	
-    	if(Objects.isNull(id)) {
+    	if(Objects.isNull(category)) {
     		pageCourses = courseRepository.findAll(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()));
     	} else {
-    		pageCourses = courseRepository.findByCategoryId(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()), id);
+    		pageCourses = courseRepository.findByCategory(PageRequest.of(page.getPageNumber(), page.getPageSize(), page.getSort()), category);
     	}
 
     	List<CourseDto> contentList = new ArrayList<>();
@@ -57,18 +55,6 @@ public class CourseService {
         return GridUtil.of(page.getPageNumber(), pageCourses.getTotalElements(), contentList);
     }
     
-    @Transactional
-    public Long getCourseCount(Long id) {
-    	if(id == null) {
-    		return courseRepository.count();
-    	}
-        return courseRepository.countByCategoryId(id);
-    }
-
-	public List<CategoryEntity> getCategories() {
-		return categoryRepository.findAll();
-	}
-
 	public List<CourseDto> getCourseByUser(String email) {
 		List<CourseEntity> courseEntityList = courseRepository.findByRegistrant_email(email);
 		
@@ -99,19 +85,6 @@ public class CourseService {
 		}
 		return id;
     }
-    
-    @Transactional
-    public Long updateCourse(CourseDto courseDto) {
-    	CourseEntity entity;
-    	Long id = null;
-    	try {
-    		entity = courseDto.toEntity();
-    		courseRepositorySupport.updateCourse(entity);
-    	} catch (JsonProcessingException e) {
-    		e.printStackTrace();
-    	}
-    	return id;
-    }
 
     @Transactional
     public void deleteCourse(Long id) {
@@ -125,8 +98,8 @@ public class CourseService {
         		.title(courseEntity.getTitle())
                 .content(courseEntity.getContent())
                 .divclsNo(courseEntity.getDivclsNo())
-                .category(courseEntity.getCategory().getId())
-                .categoryName(courseEntity.getCategory().getName())
+                .category(courseEntity.getCategory())
+                .categoryName(commonCodeService.getCodeName(CodeType.COURSE_CATEGORY, courseEntity.getCategory()))
                 .maxNum(courseEntity.getMaxNum())
                 .curNum(courseEntity.getCurNum())
                 .node(jsonToList(courseEntity.getNode()))

@@ -26,7 +26,6 @@ public class CourseDataJpaTest {
 	@Autowired
 	private CourseRepository courseRepository;
 
-
 	@Autowired
 	private CourseRepositorySupport courseRepositorySupport;
 	
@@ -44,58 +43,6 @@ public class CourseDataJpaTest {
 				.edge(null)
 				.build();
     }
-    
-	@Test
-	@DisplayName("과정 제목으로 카운트 조회")
-	public void countByTitleBoard() throws JsonProcessingException {
-    	
-		String title = "테스트제목77998877777777777";
-		
-		CourseDto dto = CourseDto.builder()
-				.title(title)
-				.registrant("admin")
-				.content("테스트내용")
-				.category(1L)
-				.divclsNo(5)
-				.maxNum(20)
-				.curNum(0)
-				.node(null)
-				.edge(null)
-				.build();
-
-		CourseEntity entity = dto.toEntity();
-		courseRepository.save(entity);
-		Long result = courseRepositorySupport.findCountByTitle(title);
-		
-		assertThat(result, is(1L));
-	}
-	
-	@Test
-	@DisplayName("과정 수정")
-	public void updateCourse() throws JsonProcessingException {
-		
-		String title = "테스트제목77998877777777777";
-		CourseDto dto = CourseDto.builder()
-				.title(title)
-				.registrant("admin")
-				.content("테스트내용")
-				.category(1L)
-				.divclsNo(5)
-				.maxNum(20)
-				.curNum(0)
-				.build();
-		
-		CourseEntity entity = dto.toEntity();
-		CourseEntity saveEntity = courseRepository.save(entity);
-		
-		Long saveId = saveEntity.getId();
-		saveEntity.setContent("수정된내용");
-		saveEntity.setMaxNum(30);
-		courseRepositorySupport.updateCourse(saveEntity);
-		CourseEntity updateEntity = courseRepository.findById(saveId).get();
-		
-		assertThat(dto.getContent(), not(updateEntity.getContent()));
-	}
 
 	@Test
 	@DisplayName("과정 등록")
