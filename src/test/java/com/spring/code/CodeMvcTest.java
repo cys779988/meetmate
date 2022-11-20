@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.code.controller.CommonCodeController;
 import com.spring.code.controller.CommonCodeRestController;
 import com.spring.code.model.CodeRequest;
+import com.spring.code.model.CodeType;
 import com.spring.code.service.CommonCodeService;
 import com.spring.security.config.SecurityConfig;
 
@@ -46,10 +47,24 @@ class CodeMvcTest {
     private CommonCodeService commonCodeService;
     
     @Test
-    public void getCodes() throws Exception {
+    public void getCodesGridForm() throws Exception {
     	MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
     	param.add("page", "1");
     	param.add("perPage", "10");
+    	param.add("search", CodeType.COURSE_CATEGORY.getKey());
+    	
+    	mockMvc.perform(get("/admin/api/code/grid")
+    			.params(param)
+    			.contentType(MediaType.APPLICATION_JSON_VALUE)
+    			.accept(MediaType.APPLICATION_JSON_VALUE))
+    	.andDo(print())
+    	.andExpect(status().isOk());
+    }
+    
+    @Test
+    public void getCodes() throws Exception {
+    	MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+    	param.add("search", CodeType.COURSE_CATEGORY.getKey());
     	
         mockMvc.perform(get("/admin/api/code")
         			.params(param)

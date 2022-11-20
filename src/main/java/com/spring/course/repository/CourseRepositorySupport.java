@@ -18,8 +18,8 @@ public class CourseRepositorySupport extends QuerydslRepositorySupport {
 		this.queryFactory = queryFactory;
 	}
 	
-	public void updateCurNum(Long no) {
-		queryFactory.update(courseEntity)
+	public long updateCurNum(Long no) {
+		return queryFactory.update(courseEntity)
 					.set(courseEntity.curNum, courseEntity.curNum.add(1))
 					.where(courseEntity.id.eq(no))
 					.execute();

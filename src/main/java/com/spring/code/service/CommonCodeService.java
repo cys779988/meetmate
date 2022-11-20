@@ -41,10 +41,10 @@ public class CommonCodeService {
 
 	@Transactional
 	@CacheEvict(value = "commonCodeStore", allEntries = true)
-	public void addCodes(CodeRequest request) {
+	public List<CommonCodeEntity> addCodes(CodeRequest request) {
 		String email = AppUtil.getUser();
 		request.getRows().forEach(i -> i.setRegistrant(email));;
-		commonCodeRepository.saveAll(request.getRows());
+		return commonCodeRepository.saveAll(request.getRows());
 	}
 
 	@Transactional
