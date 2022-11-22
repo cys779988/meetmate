@@ -17,25 +17,7 @@ public class RedisSubscriber{
 	private final ObjectMapper objectMapper;
 	private final SimpMessageSendingOperations messagingTemplate;
 
-	// Redis에서 메시지가 publish 되면 대기하고 있던 onMessage가 해당 메시지를 받아 처리
-
-	/*
-	@Override
-	public void onMessage(Message message, byte[] pattern) {
-		// TODO Auto-generated method stub
-		try {
-			String body = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-			ChatMessage roomMessage = objectMapper.readValue(body, ChatMessage.class);
-			messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
-		} catch (Exception e) {
-			// TODO: handle exception
-			log.error(e.getMessage());
-		}
-	}
-	*/
-	/**
-	 * Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis Subscriber가 해당 메시지를 받아 처리한다.
-	 */
+	// Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis Subscriber가 해당 메시지 처리.
 	public void sendMessage(String publishMessage) {
 		try {
 			ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);

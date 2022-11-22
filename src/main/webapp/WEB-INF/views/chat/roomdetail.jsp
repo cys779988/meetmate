@@ -38,7 +38,7 @@
 								<div class="input-group-prepend">
 									<label class="input-group-text">내용</label>
 								</div>
-								<input type="text" class="form-control" name="message">
+								<input type="text" class="form-control" name="message" id="message">
 								<div class="input-group-append">
 									<button class="btn btn-primary" type="button" id="sendMessage">보내기</button>
 								</div>
@@ -48,6 +48,14 @@
 							<div class="container-fluid px-4">
 								<div class="chat">
 									<ul class="list-group" id="items">
+										<c:forEach items="${chatMessage}" var="item">
+											<li class="list-group-item d-flex justify-content-between align-items-start">
+												<div class="ms-2 me-auto">
+												${item.sender} : ${item.message}
+												</div>
+												<span class="badge bg-primary rounded-pill">${item.createdDate}</span>
+											</li>
+										</c:forEach>
 							       	</ul>
 						       	</div>
 							</div>
@@ -62,50 +70,34 @@
 <script src="<c:url value='/webjars/sockjs-client/1.1.2/sockjs.min.js'/>"></script>
 <script src="<c:url value='/webjars/stomp-websocket/2.3.3-1/stomp.min.js'/>"></script>
 <script>
+window.addEventListener('DOMContentLoaded', () => {
+	let sock = new SockJS("<c:url value='/ws-stomp'/>");
+	let ws = Stomp.over(sock);
+	let messages = [];
+	const roomId = document.getElementsByName('roomId')[0].value;
+	let token;
 
-	var sock = new SockJS("<c:url value='/ws-stomp'/>");
-	var ws = Stomp.over(sock);
-	var messages = [];
-	var roomId = document.getElementsByName('roomId')[0].value;
-	window.addEventListener('DOMContentLoaded', (e) => {
-		e.preventDefault();
-		created();
-	});
+	(function(){
+		axios.get("<c:url value='/chat/user'/>").then(response => {
+			token = response.data.token;
+			ws.connect({"token" : token}, function(frame){
+				ws.subscribe("/sub/chat/room/"+ roomId, function(message){
+					var recv = JSON.parse(message.body);
+					recvMessage(recv);
+				});
+				sendMessage('ENTER');
+			}, function(error) {
+				alert('서버 연결에 실패했습니다.');
+			})
+		})
+	})();
 	
 	window.onbeforeunload = function(){
 		ws.disconnect();
 	}
 	
-	document.getElementById('sendMessage').addEventListener('keyup', (e) => {
-		if(e.keyCode === 13){
-			sendMessage();
-		}
-	});
-	
-	document.getElementById('sendMessage').addEventListener('click', (e) => {
-		sendMessage();
-	});
-	
-	function created(){
-		var _this = this;
-		axios.get("<c:url value='/chat/user'/>").then(response => {
-			_this.token = response.data.token;
-			console.log(_this.token);
-			console.log(_this.roomId);
-			ws.connect({"token" : _this.token}, function(frame){
-				ws.subscribe("/sub/chat/room/"+ _this.roomId, function(message){
-					var recv = JSON.parse(message.body);
-					_this.recvMessage(recv);
-				});
-				_this.sendMessage('ENTER');
-			}, function(error) {
-				alert('서버 연결에 실패했습니다.');
-			})
-		})
-	}
-	
 	function sendMessage(type) {
-		var message = document.getElementsByName('message')[0].value;
+		const message = document.getElementsByName('message')[0].value;
 		ws.send("/pub/chat/message"
 				, {"token" : token}
 				, JSON.stringify({
@@ -122,44 +114,45 @@
 	function recvMessage(recv) {
 		messages.unshift({
 			"type" : recv.type,
-			"sender" : recv.type == 'ENTER' ? '[알림]' : recv.sender,
+			"sender" : recv.sender,
 			"message" : recv.message
 		});
 		chatUpdate(recv);
 	}
 	
-	/* 
-	ws.connect({}, function(frame) {
-		ws.subscribe("/sub/chat/room/"+ roomId, function(message) {
-			var recv = JSON.parse(message.body);
-			recvMessage(recv);
-		});
-		
-		ws.send("/pub/chat/message"
-				, {}
-				, JSON.stringify({
-					type:'ENTER'
-					, roomId: roomId
-					, sender: localStorage.getItem('wschat.sender')
-					}
-				)
-		);
-		
-	}, function(error) {
-		alert(error);
-	}) */
-	
 	function chatUpdate(messages){
-		console.log(messages);
-		var items = document.getElementById('items');
-		var li = document.createElement('li');
-		li.className = 'list-group-item';
-		li.append(messages.sender + ' : ' +  messages.message);
+		let items = document.getElementById('items');
+		
+		let li = document.createElement('li');
+		li.className = 'list-group-item d-flex justify-content-between align-items-start';
+		
+		let div = document.createElement('div');
+		div.className = 'ms-2 me-auto';
+		div.append(messages.sender + ' : ' +  messages.message);
+		
+		let span = document.createElement('span');
+		span.className = 'badge bg-primary rounded-pill'
+		span.append(messages.createdDate);
+		
+		li.append(div);
+		li.append(span);
+		
 		items.appendChild(li);
-		var chatList = document.getElementsByClassName('chat')[0];
+		
+		let chatList = document.getElementsByClassName('chat')[0];
 		chatList.scrollTop = chatList.scrollHeight;
 	}
 	
+	document.getElementById('message').addEventListener('keydown', (e) => {
+		if(e.keyCode === 13){
+			sendMessage();
+		}
+	});
+	
+	document.getElementById('sendMessage').addEventListener('click', (e) => {
+		sendMessage();
+	});
+});
 </script>
 </body>
 </html>

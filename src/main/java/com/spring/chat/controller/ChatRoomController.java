@@ -2,9 +2,6 @@ package com.spring.chat.controller;
 
 import java.util.List;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +47,8 @@ public class ChatRoomController {
 	@GetMapping("/room/enter/{roomId}")
 	public String roomDetail(Model model, @PathVariable String roomId) {
 		model.addAttribute("roomId", roomId);
+		model.addAttribute("user", AppUtil.getUser());
+		model.addAttribute("chatMessage", chatRoomRepository.getChatMessages(roomId));
 		return "/chat/roomdetail";
 	}
 	

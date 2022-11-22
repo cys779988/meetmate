@@ -5,9 +5,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.spring.chat.model.ChatMessage;
 import com.spring.chat.model.ChatRoom;
 
 import lombok.RequiredArgsConstructor;
@@ -22,47 +24,40 @@ public class ChatRoomRepository {
 	// 구독 처리 서비스
 	//private final RedisSubscriber redisSubscriber;
 	
-	// Redis
 	private static final String CHAT_ROOMS = "CHAT_ROOM";
 	private final RedisTemplate<String, Object> redisTemplate;
-	private HashOperations<String, String, ChatRoom> opsHashChatRoom;
-	//private Map<String, ChannelTopic> topics;
-	
+	private HashOperations<String, String, ChatRoom> chatRooms;
+	private ListOperations<String, Object> chatMessageList;
 	
 	@PostConstruct
 	private void init() {
-		opsHashChatRoom = redisTemplate.opsForHash();
-		//topics = new HashMap<>();
+		chatRooms = redisTemplate.opsForHash();
+		chatMessageList = redisTemplate.opsForList();
 	}
 	
 	public List<ChatRoom> findAllRoom() {
-		return opsHashChatRoom.values(CHAT_ROOMS);
+		return chatRooms.values(CHAT_ROOMS);
 	}
 	
 	public ChatRoom findRoomById(String id) {
-		return opsHashChatRoom.get(CHAT_ROOMS, id);
+		return chatRooms.get(CHAT_ROOMS, id);
 	}
 	
 	public ChatRoom createChatRoom(String name) {
         ChatRoom chatRoom = ChatRoom.create(name);
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+        String roomId = chatRoom.getRoomId();
+        
+        chatRooms.put(CHAT_ROOMS, roomId, chatRoom);
+        chatMessageList.rightPush(roomId, ChatMessage.initMessage(roomId));
+        
         return chatRoom;
     }
 	
-	/*
-	public void enterChatRoom(String roomId) {
-		ChannelTopic topic = topics.get(roomId);
-		if(topic == null) {
-			topic = new ChannelTopic(roomId);
-			redisMessageListener.addMessageListener(redisSubscriber, topic);
-			topics.put(roomId, topic);
-		}
+	public void addChatMessage(ChatMessage chatMessage) {
+		chatMessageList.rightPush(chatMessage.getRoomId(), chatMessage);
 	}
-	*/
-	
-	/*
-	public ChannelTopic getTopic(String roomId) {
-		return topics.get(roomId);
+
+	public List<?> getChatMessages(String roomId) {
+		return chatMessageList.range(roomId, 0, -1);
 	}
-	 */
 }
