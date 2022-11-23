@@ -15,6 +15,9 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
+import com.spring.log.model.LogType;
+import com.spring.log.service.PerLogging;
+
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler{
 	
@@ -22,6 +25,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 	
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 	
+	@PerLogging(LogType.LOGIN)
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {

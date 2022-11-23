@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.board.model.BoardDto;
 import com.spring.board.service.BoardService;
-import com.spring.common.config.PerLogging;
 import com.spring.common.util.AppUtil;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ public class BoardController {
 
 	private BoardService boardService;
 	
-	@PerLogging
 	@GetMapping
 	public String listView() {
 		return "board/list";

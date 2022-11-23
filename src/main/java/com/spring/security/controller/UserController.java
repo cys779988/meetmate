@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.common.config.LoginUser;
+import com.spring.log.model.LogType;
+import com.spring.log.service.PerLogging;
 import com.spring.security.model.SessionUser;
 import com.spring.security.model.UserDto;
 import com.spring.security.service.UserService;
@@ -39,6 +41,7 @@ public class UserController implements HttpSessionListener{
 		return "/user/password";
 	}
 
+	@PerLogging(LogType.PASSWORD)
 	@PostMapping("/user/password")
 	public String resetPassword(UserDto userDto) {
 		userService.resetPassword(userDto);

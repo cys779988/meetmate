@@ -1,46 +1,36 @@
 package com.spring.common.config;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import com.spring.common.util.AppUtil;
+import com.spring.log.model.LogEntity;
+import com.spring.log.service.LogService;
+import com.spring.log.service.PerLogging;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @Component
 @Aspect
 @Slf4j
 public class PerfAspect {
 
-	/*
-	@Around("execution(* com.spring..*.BoardService.*(..))")
-	public Object logPerf(ProceedingJoinPoint pjp) throws Throwable {
-		long begin = System.currentTimeMillis();
-		Object retVal = pjp.proceed(); // 메서드 호출 자체를 감쌈
-		long procTime = System.currentTimeMillis() - begin;
-		System.out.println("실행시간 : " + procTime);
-		return retVal;
-	}
-	*/
-	
-	@Around("@annotation(PerLogging)")
-	public Object annotationLogPerf(ProceedingJoinPoint pjp) throws Throwable{
-		log.info("AOP : {}", pjp.getThis());
-		long begin = System.currentTimeMillis();
-		Object retVal = pjp.proceed(); // 메서드 호출 자체를 감쌈
-		long time = System.currentTimeMillis() - begin;
-		System.out.println("aop = " + time);
-		return retVal;
-	}
+	private final LogService logService;
 
+	@AfterReturning(value =  "@annotation(PerLogging)", returning = "returnValue")
+	public void annotationLogPerf(JoinPoint jp, Object returnValue) throws RuntimeException {
+		log.info("AOP : {}", jp.getThis());
+		MethodSignature methodSignature = (MethodSignature) jp.getSignature();
+		PerLogging logging = methodSignature.getMethod().getAnnotation(PerLogging.class);
 		
-	/*
-	@Around("bean(boardService)")
-	public Object beanLogPerf(ProceedingJoinPoint pjp) throws Throwable {
-		long begin = System.currentTimeMillis();
-		Object retVal = pjp.proceed(); // 메서드 호출 자체를 감쌈
-		System.out.println(System.currentTimeMillis() - begin);
-		return retVal;
+		logService.addLog(LogEntity.builder()
+									.log(logging.value().getName())
+									.registrant(AppUtil.getUser())
+									.build());
 	}
-	*/
 }
