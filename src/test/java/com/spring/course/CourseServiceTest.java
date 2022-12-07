@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -211,7 +212,7 @@ class CourseServiceTest {
     	String node = "[{\"data\":{\"id\":\"Main\",\"name\":\"Main\",\"content\":\"Main\",\"shape\":\"round-hexagon\",\"width\":80,\"height\":40,\"font\":7,\"color\":\"#D0C1B2\"},\"renderedPosition\":{\"x\":-6.666666666666669,\"y\":37.333333333333336}}]";
     	String edge = "[]";
     	
-    	when(courseRepository.save(any(CourseEntity.class))).thenReturn(new CourseEntity(1L, user, "테스트제목", "테스트글", 1L, 2, 20, 3, node, edge));
+    	when(courseRepository.save(any(CourseEntity.class))).thenReturn(new CourseEntity(1L, user, "테스트제목", "테스트글", 1L, LocalDate.now(), LocalDate.now(), LocalDate.now(), LocalDate.now(), 2, 20, 3, "", node, edge));
 
     	Long id = courseService.addCourse(courseDto);
     	

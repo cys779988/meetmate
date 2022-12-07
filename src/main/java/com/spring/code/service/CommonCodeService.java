@@ -1,7 +1,7 @@
 package com.spring.code.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.spring.code.model.CodeRequest;
 import com.spring.code.model.CodeType;
-import com.spring.code.model.CommonCodeVO;
 import com.spring.code.model.CommonCodeEntity;
 import com.spring.code.repository.CommonCodeRepository;
 import com.spring.common.model.GridForm;
@@ -54,20 +53,8 @@ public class CommonCodeService {
 	}
 	
 	@Cacheable(value = "commonCodeStore", key = "#codeType")
-	public List<CommonCodeVO> getCodes(CodeType codeType) {
+	public Map<String, String> getCodes(CodeType codeType) {
 		List<CommonCodeEntity> codeEntityList = commonCodeRepository.findByType(codeType);
-		
-		return codeEntityList.stream().map(i -> CommonCodeVO.builder()
-														.id(i.getId())
-														.name(i.getName())
-														.build())
-													.collect(Collectors.toList());
-	}
-	
-	public String getCodeName(CodeType codeType, Long id){
-		List<CommonCodeVO> codeList = getCodes(codeType);
-		Optional<String> codeWrapper = codeList.stream().filter(i -> i.getId().equals(id)).map(i -> i.getName()).findFirst();
-		
-		return codeWrapper.isPresent() ? codeWrapper.get() : "";
+		return codeEntityList.stream().collect(Collectors.toMap(i-> i.getId().toString(), CommonCodeEntity::getName));
 	}
 }

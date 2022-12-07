@@ -20,9 +20,10 @@
 							<div class="row">
 						    	<div class="col">
 							        <div class="search">
-							        	<select name="search" class="form-select">
+							        	<select name="search" class="form-select w-25">
+							        			<option value="">전체</option>
 							        		<c:forEach items="${category}" var="result">
-							        			<option value="${result.id}">${result.name}</option>
+							        			<option value="${result.key}">${result.value}</option>
 							        		</c:forEach>
 							        	</select>
 							        </div>
@@ -126,8 +127,12 @@
 	        name: 'maxNum'
 	    },
 	    {
-	        header: '작성일',
-	        name: 'createdDate'
+	        header: '신청시작일자',
+	        name: 'applyStartDate'
+	    },
+	    {
+	        header: '신청종료일자',
+	        name: 'applyEndDate'
 	    }
 	];
 	

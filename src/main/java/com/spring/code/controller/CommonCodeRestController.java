@@ -1,6 +1,8 @@
 package com.spring.code.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,8 @@ public class CommonCodeRestController {
 	
 	@GetMapping
 	public ResponseEntity<?> getCodes(CodeType codeType) {
-		List<CommonCodeVO> codeList = commonCodeService.getCodes(codeType);
+		Map<String, String> codes = commonCodeService.getCodes(codeType);
+		List<CommonCodeVO> codeList = codes.entrySet().stream().map(i -> CommonCodeVO.builder().id(i.getKey()).name(i.getValue()).build()).collect(Collectors.toList());
 		return ResponseEntity.ok(codeList);
 	}
 

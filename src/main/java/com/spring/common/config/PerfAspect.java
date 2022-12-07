@@ -22,7 +22,7 @@ public class PerfAspect {
 
 	private final LogService logService;
 
-	@AfterReturning(value =  "@annotation(PerLogging)", returning = "returnValue")
+	@AfterReturning(value =  "@annotation(com.spring.log.service.PerLogging)", returning = "returnValue")
 	public void annotationLogPerf(JoinPoint jp, Object returnValue) throws RuntimeException {
 		log.info("AOP : {}", jp.getThis());
 		MethodSignature methodSignature = (MethodSignature) jp.getSignature();

@@ -1,5 +1,7 @@
 package com.spring.course.model;
 
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -36,18 +38,37 @@ public class CourseEntity extends BaseTimeEntity {
 	@Column(length = 30, nullable = false)
 	private String title;
 
-	@Column(columnDefinition = "TEXT", nullable = false)
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
+	@Column(nullable = false)
 	private Long category;
 
+	@Column(nullable = false)
+	private LocalDate applyStartDate;
+	
+	@Column(nullable = false)
+	private LocalDate applyEndDate;
+	
+	@Column(nullable = false)
+	private LocalDate startDate;
+	
+	@Column(nullable = false)
+	private LocalDate endDate;
+	
 	private Integer divclsNo;
 	
+	@Column(nullable = false)
 	private Integer maxNum;
 
 	@ColumnDefault("0")
+	@Column(insertable = true, updatable = false)
 	private Integer curNum;
 
+	@Lob
+	@Column(name = "SCHEDULES", columnDefinition = "BLOB")
+	private String schedules;
+	
 	@Lob
 	@Column(name = "MAP_NODE", columnDefinition = "BLOB")
 	private String node;
@@ -56,21 +77,21 @@ public class CourseEntity extends BaseTimeEntity {
 	@Column(name = "MAP_EDGE", columnDefinition = "BLOB")
 	private String edge;
 	
-	/*
-	 * @PrePersist public void prePersist() { this.curNum = this.curNum == null ? 0
-	 * : this.curNum; }
-	 */
-
 	@Builder
-    public CourseEntity(Long id, UserEntity registrant, String title, String content, Long category, Integer divclsNo, Integer maxNum, Integer curNum, String node, String edge) {
+    public CourseEntity(Long id, UserEntity registrant, String title, String content, Long category, LocalDate applyStartDate, LocalDate applyEndDate, LocalDate startDate, LocalDate endDate, Integer divclsNo, Integer maxNum, Integer curNum, String schedules, String node, String edge) {
         this.id = id;
         this.registrant = registrant;
         this.title = title;
         this.content = content;
         this.category = category;
+        this.applyStartDate = applyStartDate;
+        this.applyEndDate = applyEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.divclsNo = divclsNo;
 		this.maxNum = maxNum;
 		this.curNum = curNum;
+		this.schedules = schedules;
 		this.node = node;
 		this.edge = edge;
     }

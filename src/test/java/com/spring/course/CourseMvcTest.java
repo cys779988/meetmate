@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,10 @@ class CourseMvcTest {
 						.registrant("admin")
 						.content("테스트내용")
 						.category(1L)
+						.applyStartDate(LocalDate.now())
+						.applyEndDate(LocalDate.now())
+						.startDate(LocalDate.now())
+						.endDate(LocalDate.now())
 						.divclsNo(5)
 						.maxNum(20)
 						.curNum(0)
@@ -123,6 +129,10 @@ class CourseMvcTest {
 				.registrant("admin")
 				.content("테스트내용")
 				.category(1L)
+				.applyStartDate(LocalDate.now())
+				.applyEndDate(LocalDate.now())
+				.startDate(LocalDate.now())
+				.endDate(LocalDate.now())
 				.divclsNo(5)
 				.maxNum(20)
 				.curNum(0)

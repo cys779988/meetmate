@@ -53,11 +53,8 @@ public class BoardService {
     																		, page.getPageSize()
     																		, page.getSort())
     																	, keyword);
-    	List<BoardDto> contentList = new ArrayList<>();
     	
-    	if(pageBoards.hasContent()) {
-    		contentList = pageBoards.getContent().stream().map(i -> convertBoardEntityToDto(i)).collect(Collectors.toList());
-    	}
+    	List<BoardDto> contentList = convertBoardEntityListToDtoList(pageBoards.getContent());
     	
         return GridUtil.of(page.getPageNumber(), pageBoards.getTotalElements(), contentList);
     }
@@ -155,7 +152,19 @@ public class BoardService {
 		return convertFileEntityToDto(boardFileEntity.get());
 	}
 	
-    private BoardDto convertBoardEntityToDto(BoardEntity boardEntity) {
+	private List<BoardDto> convertBoardEntityListToDtoList(List<BoardEntity> boardEntityList) {
+		List<BoardDto> boardDtoList = boardEntityList.stream().map(i -> BoardDto.builder()
+																				.id(i.getId())
+																				.title(i.getTitle())
+																				.content(i.getContent())
+																				.registrant(i.getRegistrant().getEmail())
+																				.createdDate(i.getCreatedDate())
+																				.build()
+																				).collect(Collectors.toList());
+		return boardDtoList;
+	}
+
+	private BoardDto convertBoardEntityToDto(BoardEntity boardEntity) {
     	List<FileDto> fileList = boardEntity.getFiles().stream().map(i -> convertFileEntityToDto(i)).collect(Collectors.toList());
     	
         return BoardDto.builder()

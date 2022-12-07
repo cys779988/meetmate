@@ -25,8 +25,7 @@
 	 * columnData : JSON {column 데이터}
 	 * height : grid 높이
 	 */
-	function createGrid_scroll(el, apiInfo, columnData, height) {
-		if(height===null) height = 'auto';
+	function createGrid_scroll(el, apiInfo, columnData, height = 'auto') {
 		return new tui.Grid({
 	        el: document.getElementById(el),
 	        data: apiInfo,
@@ -52,10 +51,9 @@
 	 * rowHeaderData : row헤더 타입
 	 * headerData : 병합하기 위한 column헤더 데이터
 	 */
-	function createGrid_paging(el, apiInfo, columnData, height, page, rowHeaderData, headerData) {
+	function createGrid_paging(el, apiInfo, columnData, height = 'auto', page = 10, rowHeaderData, headerData) {
 		let rowHeaders;
 		let header;
-		if(height===null) height = 'auto';
 		if(headerData) {
 			header = {
 				"height" : 160,

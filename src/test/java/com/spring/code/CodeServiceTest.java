@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import com.spring.code.model.CodeRequest;
 import com.spring.code.model.CodeType;
 import com.spring.code.model.CommonCodeEntity;
-import com.spring.code.model.CommonCodeVO;
 import com.spring.code.repository.CommonCodeRepository;
 import com.spring.code.service.CommonCodeService;
 import com.spring.common.model.GridForm;
@@ -71,9 +71,9 @@ class CodeServiceTest {
     	
     	when(commonCodeRepository.findByType(CodeType.COURSE_CATEGORY)).thenReturn(getCodeListData());
     	
-    	List<CommonCodeVO> codeList = commonCodeService.getCodes(CodeType.COURSE_CATEGORY);
+    	Map<String, String> codes = commonCodeService.getCodes(CodeType.COURSE_CATEGORY);
     	
-    	assertThat(codeList, notNullValue());
+    	assertThat(codes, notNullValue());
     	
     	verify(commonCodeRepository, times(1)).findByType(any());
     }

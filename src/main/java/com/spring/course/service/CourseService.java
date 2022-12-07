@@ -25,6 +25,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,6 +93,7 @@ public class CourseService {
     }
 	
     private CourseDto convertEntityToDto(CourseEntity courseEntity) {
+    	Map<String, String> codes = commonCodeService.getCodes(CodeType.COURSE_CATEGORY);
         return CourseDto.builder()
         		.id(courseEntity.getId())
         		.registrant(courseEntity.getRegistrant().getEmail())
@@ -99,9 +101,14 @@ public class CourseService {
                 .content(courseEntity.getContent())
                 .divclsNo(courseEntity.getDivclsNo())
                 .category(courseEntity.getCategory())
-                .categoryName(commonCodeService.getCodeName(CodeType.COURSE_CATEGORY, courseEntity.getCategory()))
+                .categoryName(codes.get(courseEntity.getCategory().toString()))
+                .applyStartDate(courseEntity.getApplyStartDate())
+                .applyEndDate(courseEntity.getApplyEndDate())
+                .startDate(courseEntity.getStartDate())
+                .endDate(courseEntity.getEndDate())
                 .maxNum(courseEntity.getMaxNum())
                 .curNum(courseEntity.getCurNum())
+                .schedules(jsonToList(courseEntity.getSchedules()))
                 .node(jsonToList(courseEntity.getNode()))
                 .edge(jsonToList(courseEntity.getEdge()))
                 .createdDate(courseEntity.getCreatedDate())
@@ -110,16 +117,18 @@ public class CourseService {
 
     private List<Object> jsonToList(String data) {
     	List<Object> readValue = new ArrayList<Object>();
-    	try {
-    		readValue = objectMapper.readValue(data, new TypeReference<List<Object>>() {
-			});
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    	if(Objects.nonNull(data)) {
+	    	try {
+	    		readValue = objectMapper.readValue(data, new TypeReference<List<Object>>() {
+				});
+			} catch (JsonParseException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
 		return readValue;
     }
 
