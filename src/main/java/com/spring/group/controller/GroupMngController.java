@@ -23,9 +23,15 @@ public class GroupMngController {
 	private CourseService courseService;
 	
 	@GetMapping
-	public String groupMngView(Model model) {
+	public String myGroupMngView(Model model) {
 		model.addAttribute("course", courseService.getCourseByUser(AppUtil.getUser()));
 		return "group/list";
+	}
+	
+	@GetMapping("/apply")
+	public String appplyGroupView(Model model) {
+		model.addAttribute("course", groupMngService.getApplyCourseByUser(AppUtil.getUser()));
+		return "group/applyList";
 	}
 	
 	@GetMapping("/basicForm/{id}")

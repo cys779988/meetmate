@@ -28,13 +28,13 @@ public class GroupMngRestController {
 	ObjectMapper objectMapper;
 	
 	@PostMapping("/apply/{no}")
-	public ResponseEntity apply(@PathVariable("no") Long no) {
+	public ResponseEntity applyGroup(@PathVariable("no") Long no) {
 		groupMngService.apply(no);
 		return ResponseEntity.ok("");
 	}
 	
 	@GetMapping("/{no}")
-	public ResponseEntity getUsers(@PathVariable("no") Long no) {
+	public ResponseEntity getGroupUsers(@PathVariable("no") Long no) {
 		return ResponseEntity.ok(groupMngService.getUsers(no));
 	}
 

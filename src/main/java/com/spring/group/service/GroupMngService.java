@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.common.exception.BusinessException;
 import com.spring.common.model.ErrorCode;
 import com.spring.common.util.AppUtil;
+import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
@@ -42,26 +43,27 @@ public class GroupMngService {
 	
     @Transactional
 	public void apply(Long no) {
-		CourseEntity courseEntity = courseRepository.findById(no).get();
-		
-		GroupID groupId = GroupID.builder()
-								.course(courseEntity)
-								.member(UserEntity.builder()
-										.email(AppUtil.getUser())
-										.build())
-								.build();
-		
-		if(courseEntity.getCurNum() == courseEntity.getMaxNum()) {
-			throw new BusinessException(ErrorCode.EXCEED_APPLY);
-		} else if(groupRepository.findById(groupId).isPresent()) {
-			throw new BusinessException(ErrorCode.DUPLICATED_APPLY);
+    	synchronized (no) {
+    		CourseEntity courseEntity = courseRepository.findById(no).get();
+			GroupID groupId = GroupID.builder()
+					.course(courseEntity)
+					.member(UserEntity.builder()
+							.email(AppUtil.getUser())
+							.build())
+					.build();
+			
+			if(courseEntity.getCurNum() == courseEntity.getMaxNum()) {
+				throw new BusinessException(ErrorCode.EXCEED_APPLY);
+			} else if(groupRepository.findById(groupId).isPresent()) {
+				throw new BusinessException(ErrorCode.DUPLICATED_APPLY);
+			}
+			
+			courseRepositorySupport.updateCurNum(no);
+			GroupEntity groupEntity = GroupEntity.builder()
+					.id(groupId)
+					.build();
+			groupRepository.save(groupEntity);
 		}
-		
-		courseRepositorySupport.updateCurNum(no);
-		GroupEntity groupEntity = GroupEntity.builder()
-				.id(groupId)
-				.build();
-		groupRepository.save(groupEntity);
 	}
 	
 
@@ -163,6 +165,11 @@ public class GroupMngService {
 			groupEntityList.add(dto.toEntity());
 		});
 		groupRepository.saveAll(groupEntityList);
+	}
+	
+	public List<CourseDto> getApplyCourseByUser(String user) {
+		groupRepositorySupport.findGroupById(user);
+		return null;
 	}
 	
     private GroupDto convertEntityToDto(GroupEntity groupEntity) {
