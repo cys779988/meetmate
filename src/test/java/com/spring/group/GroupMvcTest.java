@@ -26,11 +26,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.course.controller.GroupMngController;
+import com.spring.course.controller.GroupMngRestController;
+import com.spring.course.model.GroupDto;
 import com.spring.course.service.CourseService;
-import com.spring.group.controller.GroupMngController;
-import com.spring.group.controller.GroupMngRestController;
-import com.spring.group.model.GroupDto;
-import com.spring.group.service.GroupMngService;
+import com.spring.course.service.GroupMngService;
 import com.spring.security.config.SecurityConfig;
 
 @ExtendWith(SpringExtension.class)
@@ -55,14 +55,6 @@ class GroupMvcTest {
 		mockMvc.perform(get("/group"))
 		.andExpect(status().isOk())
 		.andExpect(view().name("group/list"))
-		.andDo(print());
-	}
-	
-	@Test
-	public void applyMngViewTest() throws Exception{
-		mockMvc.perform(get("/group/apply"))
-		.andExpect(status().isOk())
-		.andExpect(view().name("group/applyList"))
 		.andDo(print());
 	}
 	

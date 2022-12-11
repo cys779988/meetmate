@@ -16,9 +16,11 @@ import com.spring.code.model.CodeType;
 import com.spring.code.service.CommonCodeService;
 import com.spring.common.model.GridForm;
 import com.spring.common.util.GridUtil;
+import com.spring.course.model.ApplyCourseRequest;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CourseRepository;
+import com.spring.course.repository.CourseRepositorySupport;
 
 import javax.transaction.Transactional;
 
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 public class CourseService {
 	private CommonCodeService commonCodeService;
     private CourseRepository courseRepository;
+    private CourseRepositorySupport courseRepositorySupport;
     private ObjectMapper objectMapper;
     
     @Transactional
@@ -54,6 +57,19 @@ public class CourseService {
     	}
     	
         return GridUtil.of(page.getPageNumber(), pageCourses.getTotalElements(), contentList);
+    }
+    
+    @Transactional
+    public GridForm getApplyCoursesGridForm(ApplyCourseRequest request) {
+    	Page<CourseEntity> pageCourses = courseRepositorySupport.findApplyCourseByCategory(request);
+
+    	List<CourseDto> contentList = new ArrayList<>();
+    	
+    	if(pageCourses.hasContent()) {
+    		contentList = pageCourses.getContent().stream().map(i -> convertEntityToDto(i)).collect(Collectors.toList());
+    	}
+    	
+        return GridUtil.of(request.getPage().getPageNumber(), pageCourses.getTotalElements(), contentList);
     }
     
 	public List<CourseDto> getCourseByUser(String email) {

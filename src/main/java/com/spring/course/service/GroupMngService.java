@@ -1,4 +1,4 @@
-package com.spring.group.service;
+package com.spring.course.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,15 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.common.exception.BusinessException;
 import com.spring.common.model.ErrorCode;
 import com.spring.common.util.AppUtil;
-import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
+import com.spring.course.model.GroupDto;
+import com.spring.course.model.GroupEntity;
+import com.spring.course.model.GroupID;
 import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
-import com.spring.group.model.GroupDto;
-import com.spring.group.model.GroupEntity;
-import com.spring.group.model.GroupID;
-import com.spring.group.repository.GroupRepository;
-import com.spring.group.repository.GroupRepositorySupport;
+import com.spring.course.repository.GroupRepository;
+import com.spring.course.repository.GroupRepositorySupport;
 import com.spring.security.model.UserEntity;
 
 import lombok.AllArgsConstructor;
@@ -41,6 +40,8 @@ public class GroupMngService {
     private GroupRepositorySupport groupRepositorySupport;
 	ObjectMapper objectMapper;
 	
+
+    
     @Transactional
 	public void apply(Long no) {
     	synchronized (no) {
@@ -165,11 +166,6 @@ public class GroupMngService {
 			groupEntityList.add(dto.toEntity());
 		});
 		groupRepository.saveAll(groupEntityList);
-	}
-	
-	public List<CourseDto> getApplyCourseByUser(String user) {
-		groupRepositorySupport.findGroupById(user);
-		return null;
 	}
 	
     private GroupDto convertEntityToDto(GroupEntity groupEntity) {

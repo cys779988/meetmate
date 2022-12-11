@@ -20,12 +20,12 @@ import com.spring.common.exception.BusinessException;
 import com.spring.common.model.ErrorCode;
 import com.spring.common.util.AppUtil;
 import com.spring.course.model.CourseEntity;
+import com.spring.course.model.GroupEntity;
 import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
-import com.spring.group.model.GroupEntity;
-import com.spring.group.repository.GroupRepository;
-import com.spring.group.repository.GroupRepositorySupport;
-import com.spring.group.service.GroupMngService;
+import com.spring.course.repository.GroupRepository;
+import com.spring.course.repository.GroupRepositorySupport;
+import com.spring.course.service.GroupMngService;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
 
@@ -75,7 +75,7 @@ class GroupServiceTest {
 	}
 
 	@Test
-	public void apply() {
+	public void exceedApplyExceptionTest() {
 		CourseEntity courseEntity = getCourseData();
 		courseEntity.setMaxNum(1);
 
@@ -96,7 +96,7 @@ class GroupServiceTest {
 	}
 
 	@Test
-	public void duplicatedApply() {
+	public void duplicatedApplyExceptionTest() {
 		CourseEntity courseEntity = getCourseData();
 
 		when(courseRepository.findById(ID)).thenReturn(Optional.of(courseEntity));

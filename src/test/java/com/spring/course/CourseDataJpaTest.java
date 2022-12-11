@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -26,8 +28,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
+import com.spring.course.model.GroupEntity;
+import com.spring.course.model.GroupID;
 import com.spring.course.model.QCourseEntity;
 import com.spring.course.repository.CourseRepository;
+import com.spring.course.repository.GroupRepository;
+import com.spring.group.model.QGroupEntity;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
 import com.spring.security.repository.UserRepository;
@@ -45,18 +51,22 @@ public class CourseDataJpaTest {
 	
 	@Autowired
 	private CourseRepository courseRepository;
+	
+	@Autowired
+	private GroupRepository groupRepository;
 
 	@Autowired
 	private UserRepository userRepository;
 
 	private static long ID;
 
+	private static String USER_ID = "admin";
 	@BeforeEach
 	public void init() {
 		queryFactory = new JPAQueryFactory(em);
 		
 		UserEntity userEntity = UserEntity.builder()
-											.email("admin")
+											.email(USER_ID)
 											.password("admin")
 											.name("admin")
 											.role(Role.ADMIN)
@@ -70,6 +80,10 @@ public class CourseDataJpaTest {
 												.registrant(userEntity)
 												.content("테스트내용")
 												.category(1L)
+												.applyStartDate(LocalDate.now())
+												.applyEndDate(LocalDate.now())
+												.startDate(LocalDate.now())
+												.endDate(LocalDate.now())
 												.divclsNo(5)
 												.maxNum(20)
 												.curNum(0)
@@ -116,6 +130,10 @@ public class CourseDataJpaTest {
 								.registrant("admin")
 								.content("테스트내용")
 								.category(1L)
+								.applyStartDate(LocalDate.now())
+								.applyEndDate(LocalDate.now())
+								.startDate(LocalDate.now())
+								.endDate(LocalDate.now())
 								.divclsNo(5)
 								.maxNum(20)
 								.curNum(0)
@@ -152,6 +170,37 @@ public class CourseDataJpaTest {
 						.execute();
 		
 		assertThat(affectedRow, is(1L));
+	}
+	
+	@Test
+	@DisplayName("회원이 신청한 과정 조회")
+	public void getApplyGroupByUserId() {
+		CourseEntity courseEntity = courseRepository.findById(ID).get();
+		
+		UserEntity userEntity = userRepository.findById(USER_ID).get();
+		
+		GroupID groupId = GroupID.builder()
+								.course(courseEntity)
+								.member(userEntity)
+								.build();
+		
+		GroupEntity groupEntity = GroupEntity.builder()
+											.id(groupId)
+											.build();
+		groupRepository.save(groupEntity).getId();
+		
+		QGroupEntity qGroupEntity =  QGroupEntity.groupEntity;
+		QCourseEntity qCourseEntity = QCourseEntity.courseEntity;
+		
+		List<CourseEntity> courseList = queryFactory.select(qCourseEntity)
+													.from(qGroupEntity)
+													.innerJoin(qCourseEntity).on(qCourseEntity.id.eq(qGroupEntity.id.course.id))
+													.fetchJoin()
+													.where(qGroupEntity.id.member.email.eq(USER_ID))
+													.fetch();
+		
+		
+		assertThat(courseList.isEmpty(), is(false));
 	}
 
 }

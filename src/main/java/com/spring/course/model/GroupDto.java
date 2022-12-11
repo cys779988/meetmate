@@ -1,6 +1,5 @@
-package com.spring.group.model;
+package com.spring.course.model;
 
-import com.spring.course.model.CourseEntity;
 import com.spring.security.model.UserEntity;
 
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.spring.group.model;
+package com.spring.course.model;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.common.model.GridForm;
 import com.spring.common.util.AppUtil;
+import com.spring.course.model.ApplyCourseRequest;
 import com.spring.course.model.CourseDto;
 import com.spring.course.service.CourseService;
 
@@ -32,6 +33,16 @@ public class CourseRestController {
 	@GetMapping
 	public ResponseEntity<?> getCourses(Pageable page, @RequestParam(value = "search", required = false) Long searchParam) {
 		GridForm coursesGridForm = courseService.getCoursesGridForm(page, searchParam);
+		return ResponseEntity.ok(coursesGridForm);
+	}
+	
+	@GetMapping("/apply")
+	public ResponseEntity<?> getApplyCourses(Pageable page, @RequestParam(value = "search", required = false) Long searchParam) {
+		GridForm coursesGridForm = courseService.getApplyCoursesGridForm(ApplyCourseRequest.builder()
+																						.page(page)
+																						.category(searchParam)
+																						.userId(AppUtil.getUser())
+																						.build());
 		return ResponseEntity.ok(coursesGridForm);
 	}
 	

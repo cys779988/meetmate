@@ -30,6 +30,12 @@ public class CourseController {
 		return "course/list";
 	}
 
+	@GetMapping("/apply")
+	public String appplyListView(Model model) {
+		model.addAttribute("category", commonCodeService.getCodes(CodeType.COURSE_CATEGORY));
+		return "course/applyList";
+	}
+	
 	@GetMapping("/add")
 	public String addView(Model model) {
 		model.addAttribute("category", commonCodeService.getCodes(CodeType.COURSE_CATEGORY));

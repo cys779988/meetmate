@@ -3,6 +3,7 @@ package com.spring.group;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -20,12 +21,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.course.model.CourseEntity;
-import com.spring.course.model.QCourseEntity;
+import com.spring.course.model.GroupEntity;
+import com.spring.course.model.GroupID;
 import com.spring.course.repository.CourseRepository;
-import com.spring.group.model.GroupEntity;
-import com.spring.group.model.GroupID;
+import com.spring.course.repository.GroupRepository;
 import com.spring.group.model.QGroupEntity;
-import com.spring.group.repository.GroupRepository;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
 import com.spring.security.repository.UserRepository;
@@ -70,6 +70,10 @@ public class GroupDataJpaTest {
 												.registrant(userEntity)
 												.content("테스트내용")
 												.category(1L)
+												.applyStartDate(LocalDate.now())
+												.applyEndDate(LocalDate.now())
+												.startDate(LocalDate.now())
+												.endDate(LocalDate.now())
 												.divclsNo(5)
 												.maxNum(20)
 												.curNum(0)
@@ -125,23 +129,5 @@ public class GroupDataJpaTest {
 		boolean result = groupRepository.findById_course_id(ID).stream().allMatch(i->i.getDivNo()==null);
 		
 		assertThat(result, is(true));
-	}
-	
-	@Test
-	@DisplayName("회원이 신청한 과정 그룹 조회")
-	public void getGroupById() {
-		apply();
-		
-		QGroupEntity groupEntity =  QGroupEntity.groupEntity;
-		QCourseEntity courseEntity = QCourseEntity.courseEntity;
-		
-		List<CourseEntity> courseList = queryFactory.select(courseEntity)
-													.from(groupEntity)
-													.innerJoin(courseEntity).on(courseEntity.id.eq(groupEntity.id.course.id))
-													.fetchJoin()
-													.where(groupEntity.id.member.email.eq(USER_ID))
-													.fetch();
-		
-		assertThat(courseList.isEmpty(), is(false));
 	}
 }

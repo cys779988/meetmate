@@ -36,6 +36,7 @@ import com.spring.code.service.CommonCodeService;
 import com.spring.common.model.GridForm;
 import com.spring.common.model.GridResponse;
 import com.spring.common.util.GridUtil;
+import com.spring.course.model.ApplyCourseRequest;
 import com.spring.course.model.CourseDto;
 import com.spring.course.model.CourseEntity;
 import com.spring.course.repository.CourseRepository;
@@ -143,6 +144,27 @@ class CourseServiceTest {
     		
     		GridForm coursesGridForm = courseService.getCoursesGridForm(page, null);
     	
+    		assertThat(coursesGridForm.getData(), notNullValue());
+    	}
+    }
+    
+    @Test
+    public void getApplyCoursesGridForm() {
+    	Pageable page = PageRequest.of(0, 10);
+    	PageImpl<CourseEntity> testData = new PageImpl<CourseEntity>(getCourseListData());
+    	ApplyCourseRequest request = ApplyCourseRequest.builder()
+							    						.page(page)
+							    						.category(1L)
+							    						.userId("id")
+							    						.build();
+    	
+    	
+    	try(MockedStatic<GridUtil> gridUtil = Mockito.mockStatic(GridUtil.class)) {
+    		when(GridUtil.of(anyInt(), anyLong(), anyList())).thenReturn(new GridForm(true, new GridResponse()));
+    		lenient().when(courseRepositorySupport.findApplyCourseByCategory(request)).thenReturn(testData);
+    		
+    		GridForm coursesGridForm = courseService.getApplyCoursesGridForm(request);
+    		
     		assertThat(coursesGridForm.getData(), notNullValue());
     	}
     }

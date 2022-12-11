@@ -72,7 +72,7 @@
 	                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
 	                                <nav class="sb-sidenav-menu-nested nav">
 	                                    <a class="nav-link" href="<c:url value='/group'/>">MyCourse</a>
-	                                    <a class="nav-link" href="#">ApplyCourse</a>
+	                                    <a class="nav-link" href="<c:url value='/course/apply'/>">ApplyCourse</a>
 	                                </nav>
 	                            </div>
                         </div>

@@ -59,6 +59,14 @@ class CourseMvcTest {
 		.andDo(print());
 	}
 	
+	@Test
+	public void applyCourseListTest() throws Exception{
+		mockMvc.perform(get("/course/apply"))
+		.andExpect(status().isOk())
+		.andExpect(view().name("course/applyList"))
+		.andDo(print());
+	}
+	
     @Test
     public void getCourses() throws Exception {
     	MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
@@ -71,6 +79,20 @@ class CourseMvcTest {
 	        		.accept(MediaType.APPLICATION_JSON_VALUE))
 		        .andDo(print())
 				.andExpect(status().isOk());
+    }
+    
+    @Test
+    public void getApplyCourses() throws Exception {
+    	MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
+    	param.add("page", "1");
+    	param.add("perPage", "10");
+    	
+    	mockMvc.perform(get("/api/course/apply")
+    			.params(param)
+    			.contentType(MediaType.APPLICATION_JSON_VALUE)
+    			.accept(MediaType.APPLICATION_JSON_VALUE))
+    	.andDo(print())
+    	.andExpect(status().isOk());
     }
     
 	@Test

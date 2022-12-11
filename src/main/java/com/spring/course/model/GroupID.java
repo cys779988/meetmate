@@ -1,4 +1,4 @@
-package com.spring.group.model;
+package com.spring.course.model;
 
 import java.io.Serializable;
 
@@ -8,7 +8,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.spring.course.model.CourseEntity;
 import com.spring.security.model.UserEntity;
 
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.spring.group.controller;
+package com.spring.course.controller;
 
 
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.spring.common.util.AppUtil;
 import com.spring.course.service.CourseService;
-import com.spring.group.service.GroupMngService;
+import com.spring.course.service.GroupMngService;
 
 import lombok.AllArgsConstructor;
 
@@ -26,12 +26,6 @@ public class GroupMngController {
 	public String myGroupMngView(Model model) {
 		model.addAttribute("course", courseService.getCourseByUser(AppUtil.getUser()));
 		return "group/list";
-	}
-	
-	@GetMapping("/apply")
-	public String appplyGroupView(Model model) {
-		model.addAttribute("course", groupMngService.getApplyCourseByUser(AppUtil.getUser()));
-		return "group/applyList";
 	}
 	
 	@GetMapping("/basicForm/{id}")

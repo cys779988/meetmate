@@ -1,4 +1,4 @@
-package com.spring.group.controller;
+package com.spring.course.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.group.model.GroupDto;
-import com.spring.group.service.GroupMngService;
+import com.spring.course.model.GroupDto;
+import com.spring.course.service.CourseService;
+import com.spring.course.service.GroupMngService;
 
 import lombok.AllArgsConstructor;
 
@@ -23,6 +24,8 @@ import lombok.AllArgsConstructor;
 @SuppressWarnings("rawtypes")
 public class GroupMngRestController {
 
+	CourseService courseService;
+	
 	GroupMngService groupMngService;
 	
 	ObjectMapper objectMapper;

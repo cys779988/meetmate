@@ -1,12 +1,12 @@
-package com.spring.group.repository;
+package com.spring.course.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.spring.group.model.GroupEntity;
-import com.spring.group.model.GroupID;
+import com.spring.course.model.GroupEntity;
+import com.spring.course.model.GroupID;
 
 @Repository
 public interface GroupRepository extends JpaRepository<GroupEntity, GroupID> {
