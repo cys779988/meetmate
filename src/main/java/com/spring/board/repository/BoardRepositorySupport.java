@@ -22,13 +22,6 @@ public class BoardRepositorySupport extends QuerydslRepositorySupport{
 		this.queryFactory = queryFactory;
 	}
 	
-	public Long findCountByTitle(String title) {
-		return queryFactory
-				.selectFrom(boardEntity)
-				.where(boardEntity.title.like(title+"%"))
-				.fetchCount();
-	}
-	
 	public BoardEntity findById(Long id) {
 		return queryFactory
 				.selectFrom(boardEntity)

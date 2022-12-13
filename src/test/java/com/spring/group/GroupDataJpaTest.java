@@ -1,6 +1,7 @@
 package com.spring.group;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.*;
 
 import java.time.LocalDate;
@@ -19,8 +20,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.course.model.Assignment;
 import com.spring.course.model.CourseEntity;
+import com.spring.course.model.GroupDto;
 import com.spring.course.model.GroupEntity;
 import com.spring.course.model.GroupID;
 import com.spring.course.repository.CourseRepository;
@@ -129,5 +135,44 @@ public class GroupDataJpaTest {
 		boolean result = groupRepository.findById_course_id(ID).stream().allMatch(i->i.getDivNo()==null);
 		
 		assertThat(result, is(true));
+	}
+	
+	@Test
+	@DisplayName("그룹 유저조회")
+	public void findUsersInGroupById() {
+		QGroupEntity qGroupEntity = QGroupEntity.groupEntity;
+		
+		CourseEntity courseEntity = courseRepository.findById(ID).get();
+		
+		UserEntity userEntity = userRepository.findById(USER_ID).get();
+		
+		GroupID groupId = GroupID.builder()
+								.course(courseEntity)
+								.member(userEntity)
+								.build();
+		
+		GroupEntity groupEntity = GroupEntity.builder()
+											.id(groupId)
+											.build();
+		
+		groupRepository.save(groupEntity);
+		
+		Expression<String> cases = new CaseBuilder()
+				.when(qGroupEntity.divNo.isNull()
+						.or(qGroupEntity.divNo.eq(0L))
+					).then(Assignment.N.getValue())
+				.otherwise(Assignment.Y.getValue()).as("assignmentType");
+		
+		List<GroupDto> resultList = queryFactory.select(Projections.bean(GroupDto.class
+													, cases
+													, qGroupEntity.id.course.id.as("courseId")
+													, qGroupEntity.id.member.email.as("memberId")
+													, qGroupEntity.id.member.name.as("memberName")
+													, qGroupEntity.divNo))
+											.from(qGroupEntity)
+											.where(qGroupEntity.id.course.id.eq(ID))
+											.fetch();
+		
+		assertThat(resultList.size(), not(0));
 	}
 }

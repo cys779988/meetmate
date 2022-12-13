@@ -28,6 +28,7 @@ import com.spring.course.repository.GroupRepositorySupport;
 import com.spring.course.service.GroupMngService;
 import com.spring.security.model.Role;
 import com.spring.security.model.UserEntity;
+import com.spring.security.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceTest {
@@ -40,6 +41,9 @@ class GroupServiceTest {
 
 	@Mock
 	private CourseRepositorySupport courseRepositorySupport;
+	
+	@Mock
+	private UserRepository userRepository;
 	
 	@Mock
     private GroupRepository groupRepository;
@@ -84,7 +88,7 @@ class GroupServiceTest {
 		try (MockedStatic<AppUtil> appUtil = Mockito.mockStatic(AppUtil.class)) {
 			when(AppUtil.getUser()).thenReturn("user");
 			lenient().when(groupRepository.findById(any())).thenReturn(Optional.of(GroupEntity.builder().build()));
-			lenient().when(courseRepositorySupport.updateCurNum(ID)).thenReturn(2L);
+			lenient().when(courseRepositorySupport.updateCurNum(ID)).thenReturn(courseEntity);
 			Throwable exception = assertThrows(BusinessException.class, () -> {
 				groupMngService.apply(ID);
 			});
@@ -102,15 +106,14 @@ class GroupServiceTest {
 		when(courseRepository.findById(ID)).thenReturn(Optional.of(courseEntity));
 
 		try (MockedStatic<AppUtil> appUtil = Mockito.mockStatic(AppUtil.class)) {
-			when(AppUtil.getUser()).thenReturn("user");
+			when(userRepository.findById(AppUtil.getUser())).thenReturn(Optional.of(UserEntity.builder().build()));
 			lenient().when(groupRepository.findById(any())).thenReturn(Optional.of(GroupEntity.builder().build()));
-			lenient().when(courseRepositorySupport.updateCurNum(ID)).thenReturn(2L);
+			lenient().when(courseRepositorySupport.updateCurNum(ID)).thenReturn(courseEntity);
 			Throwable exception = assertThrows(BusinessException.class, () -> {
 				groupMngService.apply(ID);
 			});
 			
 			assertThat(exception.getMessage(), is(ErrorCode.DUPLICATED_APPLY.getMessage()));
 		}
-
 	}
 }

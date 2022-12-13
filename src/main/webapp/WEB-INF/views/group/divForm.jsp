@@ -94,6 +94,8 @@ const getData = function () {
 		url : "<c:url value='/api/group/${id}'/>", 
 		method : 'get',
 		success : function(result) {
+			result.assignment ??= [];
+			result.unassignment ??= [];
 			window.divClassData = JSON.parse(JSON.stringify([...result.assignment.concat(...result.unassignment)]));
 			window.updatedData = new Map();
 			// grid1 Data insert

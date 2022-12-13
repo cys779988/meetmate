@@ -37,6 +37,7 @@ tui.Grid.applyTheme('clean');
 		url : "<c:url value='/api/group/${id}'/>", 
 		method : 'get',
 		success : function(result) {
+			result.unassignment ??= [];
 			grid1.resetData(result.unassignment);
 			updateText($('#totCnt'), result.unassignment.length + '명');
 			$('#title').text('Course ' + crseNm);

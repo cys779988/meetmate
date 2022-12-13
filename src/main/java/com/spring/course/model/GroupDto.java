@@ -3,10 +3,10 @@ package com.spring.course.model;
 import com.spring.security.model.UserEntity;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class GroupDto {
 	
@@ -18,6 +18,8 @@ public class GroupDto {
 	
 	private Long divNo;
 	
+	private String assignmentType;
+
 	private String createdDate;
 	
 	public GroupEntity toEntity(){
@@ -36,11 +38,12 @@ public class GroupDto {
 	}
 	
 	@Builder
-	public GroupDto(String memberId, String memberName, Long courseId, Long divNo, String createdDate) {
+	public GroupDto(String memberId, String memberName, Long courseId, Long divNo, String assignmentType, String createdDate) {
 		this.memberId = memberId;
 		this.memberName = memberName;
 		this.courseId = courseId;
 		this.divNo = divNo;
+		this.assignmentType = assignmentType;
 		this.createdDate = createdDate;
 	}
 }

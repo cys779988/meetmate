@@ -92,10 +92,9 @@ public class CourseService {
     
     @Transactional
     public Long addCourse(CourseDto courseDto) {
-    	CourseEntity entity;
     	Long id = null;
 		try {
-			entity = courseDto.toEntity();
+			CourseEntity entity = courseDto.toEntity();
 			id = courseRepository.save(entity).getId();
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();

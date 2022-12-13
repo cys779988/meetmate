@@ -162,14 +162,20 @@ public class CourseDataJpaTest {
 	@Test
 	@DisplayName("과정 인원 수 증가")
 	public void update() {
-		QCourseEntity courseEntity =  QCourseEntity.courseEntity;
+		CourseEntity courseEntity = courseRepository.findById(ID).get();
+		QCourseEntity qCourseEntity =  QCourseEntity.courseEntity;
 		
-		Long affectedRow = queryFactory.update(courseEntity)
-						.set(courseEntity.curNum, courseEntity.curNum.add(1))
-						.where(courseEntity.id.eq(ID))
-						.execute();
+		queryFactory.update(qCourseEntity)
+					.set(qCourseEntity.curNum, qCourseEntity.curNum.add(1))
+					.where(qCourseEntity.id.eq(ID))
+					.execute();
 		
-		assertThat(affectedRow, is(1L));
+		em.flush();
+		em.clear();
+		
+		CourseEntity result = queryFactory.selectFrom(qCourseEntity)
+											.where(qCourseEntity.id.eq(ID)).fetchOne();
+		assertThat(courseEntity.getCurNum()+1, is(result.getCurNum()));
 	}
 	
 	@Test

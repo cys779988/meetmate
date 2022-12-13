@@ -38,7 +38,7 @@ public class GroupMngRestController {
 	
 	@GetMapping("/{no}")
 	public ResponseEntity getGroupUsers(@PathVariable("no") Long no) {
-		return ResponseEntity.ok(groupMngService.getUsers(no));
+		return ResponseEntity.ok(groupMngService.getUsersInGroupById(no));
 	}
 
 	@PostMapping("/autoDivide")

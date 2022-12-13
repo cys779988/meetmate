@@ -3,6 +3,8 @@ package com.spring.course.repository;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -19,20 +21,28 @@ import com.spring.group.model.QGroupEntity;
 @Repository
 public class CourseRepositorySupport extends QuerydslRepositorySupport {
 	
+	private final EntityManager entityManager;
 	private final JPAQueryFactory queryFactory;
 	QCourseEntity courseEntity =  QCourseEntity.courseEntity;
 	QGroupEntity groupEntity =  QGroupEntity.groupEntity;
 	
-	public CourseRepositorySupport(JPAQueryFactory queryFactory) {
+	public CourseRepositorySupport(JPAQueryFactory queryFactory, EntityManager entityManager) {
 		super(CourseEntity.class);
 		this.queryFactory = queryFactory;
+		this.entityManager = entityManager;
 	}
 	
-	public long updateCurNum(Long no) {
-		return queryFactory.update(courseEntity)
+	public CourseEntity updateCurNum(Long no) {
+		queryFactory.update(courseEntity)
 					.set(courseEntity.curNum, courseEntity.curNum.add(1))
 					.where(courseEntity.id.eq(no))
 					.execute();
+		
+		entityManager.flush();
+		entityManager.clear();
+		
+		return queryFactory.selectFrom(courseEntity)
+							.where(courseEntity.id.eq(no)).fetchOne();
 	}
 
 	public PageImpl<CourseEntity> findApplyCourseByCategory(ApplyCourseRequest request) {

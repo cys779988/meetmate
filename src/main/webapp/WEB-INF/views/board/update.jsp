@@ -35,8 +35,8 @@
 						<ul class="list-group">
 						<c:forEach items="${board.fileList}" var="item">
 							<li class="list-group-item d-flex justify-content-between align-items-center">
-								${item.originalFileName} (<fmt:formatNumber type="number" maxFractionDigits="0"  value="${item.fileSize / 1000}" />KB)
-								<a href="#" class="badge badge-danger" data-id="${item.id}" onclick="deleteFile(this)">삭제</a>
+								${item.originalFileName} (<fmt:formatNumber type="number" maxFractionDigits="0" value="${item.fileSize / 1000}" />KB)
+								<a href="#" data-id="${item.id}" onclick="deleteFile(this)"><i class="bi bi-x-square"></i></a>
 							</li>
 						</c:forEach>
 						</ul>

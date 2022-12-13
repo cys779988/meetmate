@@ -2,17 +2,15 @@ package com.spring.course.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.transaction.Transactional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +25,7 @@ import com.spring.course.repository.CourseRepository;
 import com.spring.course.repository.CourseRepositorySupport;
 import com.spring.course.repository.GroupRepository;
 import com.spring.course.repository.GroupRepositorySupport;
-import com.spring.security.model.UserEntity;
+import com.spring.security.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -35,57 +33,52 @@ import lombok.AllArgsConstructor;
 @Service
 public class GroupMngService {
 	private CourseRepositorySupport courseRepositorySupport;
+	private UserRepository userRepository;
 	private CourseRepository courseRepository;
     private GroupRepository groupRepository;
     private GroupRepositorySupport groupRepositorySupport;
 	ObjectMapper objectMapper;
 	
-
-    
-    @Transactional
+	@Transactional
 	public void apply(Long no) {
-    	synchronized (no) {
-    		CourseEntity courseEntity = courseRepository.findById(no).get();
-			GroupID groupId = GroupID.builder()
-					.course(courseEntity)
-					.member(UserEntity.builder()
-							.email(AppUtil.getUser())
-							.build())
-					.build();
-			
-			if(courseEntity.getCurNum() == courseEntity.getMaxNum()) {
-				throw new BusinessException(ErrorCode.EXCEED_APPLY);
-			} else if(groupRepository.findById(groupId).isPresent()) {
-				throw new BusinessException(ErrorCode.DUPLICATED_APPLY);
-			}
-			
-			courseRepositorySupport.updateCurNum(no);
-			GroupEntity groupEntity = GroupEntity.builder()
-					.id(groupId)
-					.build();
-			groupRepository.save(groupEntity);
+		CourseEntity courseEntity = checkApplyCourse(no);
+		
+		GroupID groupId = GroupID.builder()
+				.course(courseEntity)
+				.member(userRepository.findById(AppUtil.getUser()).get())
+				.build();
+		
+		if(groupRepository.findById(groupId).isPresent()) {
+			throw new BusinessException(ErrorCode.DUPLICATED_APPLY);
 		}
+		
+		updateApplyCount(no);
+		
+		groupRepository.save(GroupEntity.builder()
+										.id(groupId)
+										.build());
 	}
 	
+	private CourseEntity checkApplyCourse(Long no) {
+		CourseEntity courseEntity = courseRepository.findById(no).get();
+		if(courseEntity.getCurNum() == courseEntity.getMaxNum()) {
+			throw new BusinessException(ErrorCode.EXCEED_APPLY);
+		}
+		return courseEntity;
+	}
+	
+    private void updateApplyCount(Long no) {
+		CourseEntity result = courseRepositorySupport.updateCurNum(no);
+		if(result.getCurNum() > result.getMaxNum()) {
+			throw new BusinessException(ErrorCode.EXCEED_APPLY);
+		}
+    }
+	
 
-	public Map<String, Object> getUsers(Long no) {
-		Map<String, Object> result = new HashMap<>();
-		List<GroupEntity> userList = groupRepository.findById_course_id(no);
-		List<GroupDto> assignment = new ArrayList<>();
-		List<GroupDto> unassignment = new ArrayList<>();
+	public Map<String, List<GroupDto>> getUsersInGroupById(Long no) {
+		List<GroupDto> userList = groupRepositorySupport.findUsersInGroupById(no);
 		
-		
-		  userList.forEach(entity -> {
-			  if(entity.getDivNo()==null || entity.getDivNo()==0L) {
-				  unassignment.add(convertEntityToDto(entity));
-			  } else {
-				  assignment.add(convertEntityToDto(entity));
-			  }
-		  });
-		 
-		result.put("assignment", assignment);
-		result.put("unassignment", unassignment);
-		return result;
+		return userList.stream().collect(Collectors.groupingBy(GroupDto::getAssignmentType));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -168,16 +161,6 @@ public class GroupMngService {
 		groupRepository.saveAll(groupEntityList);
 	}
 	
-    private GroupDto convertEntityToDto(GroupEntity groupEntity) {
-    	return GroupDto.builder()
-    			.courseId(groupEntity.getId().getCourse().getId())
-    			.memberId(groupEntity.getId().getMember().getEmail())
-    			.memberName(groupEntity.getId().getMember().getName())
-    			.divNo(groupEntity.getDivNo())
-    			.createdDate(groupEntity.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-    			.build();
-    }
-    
 	@SuppressWarnings("rawtypes")
 	public static Object convertMapToObject(Map map, Object objClass) {
 		String keyAttribute = null;
@@ -207,5 +190,4 @@ public class GroupMngService {
 		}
 		return objClass;
 	}
-
 }

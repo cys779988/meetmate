@@ -1,6 +1,8 @@
 package com.spring.course.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -65,6 +67,10 @@ public class CourseEntity extends BaseTimeEntity {
 	@Column(insertable = true, updatable = false)
 	private Integer curNum;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "course_id")
+	private List<GroupEntity> group = new ArrayList<>();
+	
 	@Lob
 	@Column(name = "SCHEDULES", columnDefinition = "BLOB")
 	private String schedules;
