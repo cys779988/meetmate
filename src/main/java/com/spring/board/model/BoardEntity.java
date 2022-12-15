@@ -30,7 +30,7 @@ public class BoardEntity extends BaseTimeEntity {
 	@JoinColumn(referencedColumnName = "EMAIL", foreignKey = @ForeignKey(name = "fk_board_user"))
 	private UserEntity registrant;
 
-	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<BoardFileEntity> files = new ArrayList<>();
 
 	@Column(length = 30, nullable = false)
@@ -39,7 +39,7 @@ public class BoardEntity extends BaseTimeEntity {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String content;
 
-	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<ReplyEntity> reply = new ArrayList<>();
 
 	@Builder

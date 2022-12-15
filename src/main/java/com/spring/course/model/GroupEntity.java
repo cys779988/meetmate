@@ -1,8 +1,11 @@
 package com.spring.course.model;
 
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 import com.spring.common.model.BaseTimeEntity;
@@ -19,8 +22,12 @@ import lombok.NoArgsConstructor;
 public class GroupEntity extends BaseTimeEntity{
 	
 	@EmbeddedId
-	@Column(name = "GROUP_ID")
 	private GroupID id;
+	
+	@MapsId("course")
+	@ManyToOne
+	@JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_group_course"))
+	private CourseEntity course;
 	
 	private Long divNo;
 	

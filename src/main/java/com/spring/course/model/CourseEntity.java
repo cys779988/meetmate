@@ -67,8 +67,7 @@ public class CourseEntity extends BaseTimeEntity {
 	@Column(insertable = true, updatable = false)
 	private Integer curNum;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "course_id")
+	@OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<GroupEntity> group = new ArrayList<>();
 	
 	@Lob

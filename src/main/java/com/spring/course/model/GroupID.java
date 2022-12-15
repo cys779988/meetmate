@@ -21,11 +21,11 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class GroupID implements Serializable {
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_group_course"))
 	private CourseEntity course;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "member_id", referencedColumnName = "email", foreignKey = @ForeignKey(name = "fk_group_member"))
 	private UserEntity member;
 	
