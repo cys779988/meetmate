@@ -46,6 +46,7 @@ public class GroupRepositorySupport extends QuerydslRepositorySupport {
 													, groupEntity.id.course.id.as("courseId")
 													, groupEntity.id.member.email.as("memberId")
 													, groupEntity.id.member.name.as("memberName")
+													, groupEntity.createdDate
 													, groupEntity.divNo))
 											.from(groupEntity)
 											.where(groupEntity.id.course.id.eq(no))

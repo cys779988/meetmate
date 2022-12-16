@@ -84,6 +84,7 @@ const column = [
 ];
 
 function selectCourse(e) {
+	event.preventDefault();
 	const crseId = e.dataset.id;
 	$('input[name="crseNm"]').val(e.innerText);
 	$('input[name="divNo"]').val(e.dataset.divno);

@@ -105,8 +105,8 @@ const getData = function () {
 			$('#title').text('Course ' + crseNm);
 			
 			$('#selectDiv').empty();
+			
 			for(var count = 1; count <= divNo; count++){
-				console.log(count);
                 var option = $("<option class='divNo' value=" + count + ">"+count+"그룹</option>");
                 $('#selectDiv').append(option);
             }
@@ -184,16 +184,17 @@ document.getElementById('unassign-btn').addEventListener('click', e => {
 
 document.getElementById('autoDivide-btn').addEventListener('click', e => {
 	e.preventDefault();
-	let autoDivide = [];
+	let divConditions = [];
 	document.getElementsByName('autoDivideClass').forEach(data => {
-		if(data.value!=='') 
-			autoDivide.push(data.value);
+		if(data.value) 
+			divConditions.push(data.value);
 	})
 	let param = {};
-	param.divCnd = autoDivide;
-	param.data = this.divClassData;
-	param.divMth = $('input:radio[name=divMth]:checked').val()*1;
+	param.divConditions = divConditions;
+	param.memberList = this.divClassData;
+	param.divMethod = $('input:radio[name=divMth]:checked').val()*1;
 	param.divNo = document.getElementsByClassName('divNo').length*1;
+	
 	$.ajax({
 		url : "<c:url value='/api/group/autoDivide'/>",
 		method : "post",

@@ -1,7 +1,6 @@
 package com.spring.course.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.course.model.GroupDivideRequest;
 import com.spring.course.model.GroupDto;
 import com.spring.course.service.CourseService;
 import com.spring.course.service.GroupMngService;
@@ -42,8 +42,8 @@ public class GroupMngRestController {
 	}
 
 	@PostMapping("/autoDivide")
-	public ResponseEntity autoDivide(@RequestBody Map<String, Object> param) {
-		groupMngService.autoDivide(param);
+	public ResponseEntity autoDivide(@RequestBody GroupDivideRequest groupDivideRequest) {
+		groupMngService.autoDivide(groupDivideRequest);
 		return ResponseEntity.ok("");
 	}
 

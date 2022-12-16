@@ -1,5 +1,7 @@
 package com.spring.course.model;
 
+import java.time.LocalDateTime;
+
 import com.spring.security.model.UserEntity;
 
 import lombok.Builder;
@@ -20,7 +22,7 @@ public class GroupDto {
 	
 	private String assignmentType;
 
-	private String createdDate;
+	private LocalDateTime createdDate;
 	
 	public GroupEntity toEntity(){
 		GroupEntity groupEntity = GroupEntity.builder()
@@ -38,7 +40,7 @@ public class GroupDto {
 	}
 	
 	@Builder
-	public GroupDto(String memberId, String memberName, Long courseId, Long divNo, String assignmentType, String createdDate) {
+	public GroupDto(String memberId, String memberName, Long courseId, Long divNo, String assignmentType, LocalDateTime createdDate) {
 		this.memberId = memberId;
 		this.memberName = memberName;
 		this.courseId = courseId;
