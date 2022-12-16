@@ -159,6 +159,31 @@ public class CourseDataJpaTest {
 		assertThat(beforeCount - afterCount, is(1L));
 	}
 	
+	
+	@Test
+	@DisplayName("그룹이 있는 과정 삭제")
+	public void deleteCourseAndGroup() {
+		Optional<UserEntity> userWrapper = userRepository.findById(USER_ID);
+		
+		CourseEntity courseEntity = courseRepository.findById(ID).get();
+		
+		GroupEntity groupEntity = GroupEntity.builder()
+												.id(GroupID.builder().course(courseEntity).member(userWrapper.get()).build())
+												.build();
+		
+		GroupID groupId = groupRepository.saveAndFlush(groupEntity).getId();
+		
+		em.clear();
+		
+		courseRepository.deleteById(ID);
+		
+		em.flush();
+		em.clear();
+		
+		Optional<GroupEntity> groupWrapper = groupRepository.findById(groupId);
+		assertThat(groupWrapper.isPresent(), is(false));
+	}
+	
 	@Test
 	@DisplayName("과정 인원 수 증가")
 	public void update() {

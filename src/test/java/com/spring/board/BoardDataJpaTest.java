@@ -196,5 +196,37 @@ public class BoardDataJpaTest {
 		
 		assertThat(beforeCount - afterCount, is(0L));
 	}
+	
+	@Test
+	@DisplayName("댓글이 있는 게시글 삭제")
+	public void deleteBoardAndReply() {
+		Optional<UserEntity> userWrapper = userRepository.findById(ID);
+		
+		BoardEntity boardEntity = BoardEntity.builder()
+												.title("테스트제목")
+												.content("테스트내용")
+												.registrant(userWrapper.get())
+												.build();
+		
+		Long boardId = boardRepository.saveAndFlush(boardEntity).getId();
+		
+		ReplyEntity replyEntity = ReplyEntity.builder()
+												.registrant(userWrapper.get())
+												.content("테스트댓글")
+												.board(boardEntity)
+												.build();
+		
+		Long replyId = replyRepository.saveAndFlush(replyEntity).getId();
+		
+		em.clear();
+		
+		boardRepository.deleteById(boardId);
+		
+		em.flush();
+		em.clear();
+		
+		Optional<ReplyEntity> replyWrapper = replyRepository.findById(replyId);
+		assertThat(replyWrapper.isPresent(), is(false));
+	}
 
 }
